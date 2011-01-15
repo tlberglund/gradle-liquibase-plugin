@@ -1,2 +1,16 @@
+apply plugin: 'groovy'
 apply plugin: 'java'
-apply plugin: 'idea'
+
+defaultTasks 'compileGroovy'
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  groovy localGroovy()
+  compile gradleApi()
+  runtime 'com.augusttechgroup:groovy-liquibase:0.1'
+}
+

@@ -5,12 +5,12 @@ defaultTasks 'compileGroovy'
 
 repositories {
   mavenCentral()
-  mavenLocal()
+//  mavenLocal()
 }
 
 dependencies {
   groovy localGroovy()
   compile gradleApi()
-  runtime 'com.augusttechgroup:groovy-liquibase:0.1'
+//  runtime 'com.augusttechgroup:groovy-liquibase:0.1'
 }
 

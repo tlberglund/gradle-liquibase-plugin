@@ -1,0 +1,15 @@
+//
+// A Gradle build file for testing the plugin built by build.gradle
+//
+
+apply plugin: 'liquibase'
+
+repositories {
+  mavenLocal()
+}
+
+dependencies {
+  
+}
+
+

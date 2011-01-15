@@ -21,7 +21,6 @@ public interface DatabaseConfigurationContainer
   extends NamedDomainObjectContainer<DatabaseConfiguration>,
           NamedDomainObjectCollection<DatabaseConfiguration> {
 
-  public DatabaseConfiguration add(String name) throws InvalidUserDataException;
-
-  public DatabaseConfiguration add(String name, Closure configureClosure) throws InvalidUserDataException;
+//  public DatabaseConfiguration add(String name) throws InvalidUserDataException;
+//  public DatabaseConfiguration add(String name, Closure configureClosure) throws InvalidUserDataException;
 }

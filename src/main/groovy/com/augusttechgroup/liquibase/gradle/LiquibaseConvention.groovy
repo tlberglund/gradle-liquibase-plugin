@@ -1,8 +1,3 @@
-//
-// com.augusttechgroup.liquibase.gradle
-// Copyright (C) 2011 
-// ALL RIGHTS RESERVED
-//
 
 package com.augusttechgroup.liquibase.gradle
 

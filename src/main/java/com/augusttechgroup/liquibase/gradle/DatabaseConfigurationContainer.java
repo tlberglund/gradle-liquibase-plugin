@@ -4,13 +4,13 @@
 // ALL RIGHTS RESERVED
 //
 
-package com.augusttechgropu.liquibase.gradle;
+package com.augusttechgroup.liquibase.gradle;
 
 import groovy.lang.Closure;
 import org.gradle.api.NamedDomainObjectCollection;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.InvalidUserDataException;
-import com.augusttechgroup.liquibase.gradle.DatabaseConfiguration;
+
 
 /**
  * <p></p>

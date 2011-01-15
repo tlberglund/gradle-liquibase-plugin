@@ -4,14 +4,12 @@
 // ALL RIGHTS RESERVED
 //
 
-package com.augusttechgropu.liquibase.gradle;
+package com.augusttechgroup.liquibase.gradle;
 
 import org.gradle.api.internal.AutoCreateDomainObjectContainer;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.api.internal.ClassGenerator;
 
-import com.augusttechgroup.liquibase.gradle.DatabaseConfiguration;
-import com.augusttechgroup.liquibase.gradle.DefaultDatabaseConfiguration;
 
 /**
  * <p></p>
@@ -25,16 +23,13 @@ public class DefaultDatabaseConfigurationContainer
   FileResolver fileResolver;
   ClassGenerator classGenerator;
 
-
   public DefaultDatabaseConfigurationContainer(FileResolver fileResolver, ClassGenerator classGenerator) {
     super(DatabaseConfiguration.class, classGenerator);
     this.fileResolver = fileResolver;
     this.classGenerator = classGenerator;
   }
 
-  
   protected DatabaseConfiguration create(String s) {
     return new DefaultDatabaseConfiguration();
   }
-
 }

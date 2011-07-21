@@ -1,16 +1,17 @@
 apply plugin: 'groovy'
-apply plugin: 'java'
+apply plugin: 'maven'
 
-defaultTasks 'compileGroovy'
+version = '0.5'
+group = 'com.augusttechgroup'
+artifact = 'liquibase-plugin'
 
 repositories {
   mavenCentral()
-//  mavenLocal()
 }
 
 dependencies {
-  groovy localGroovy()
+  groovy 'org.codehaus.groovy:groovy:1.8.0'
   compile gradleApi()
-//  runtime 'com.augusttechgroup:groovy-liquibase:0.1'
+  compile 'org.liquibase:liquibase-core:2.0.1'
 }
 

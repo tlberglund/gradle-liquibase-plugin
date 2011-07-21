@@ -50,26 +50,26 @@ class LiquibasePlugin
       'generateChangelog', 'changeLogSync',
       'futureRollbackSQL', 'updateTestingRollback'
     ].each { taskName ->
-      project.task(taskName, type: LiquibaseTask) {
+      project.task(taskName, type: LiquibaseBaseTask) {
         group = 'Liquibase'
         command = taskName
       }
     }
 
     [ 'update', 'updateSQL' ].each { taskName ->
-      project.task(taskName, type: LiquibaseTask) {
+      project.task(taskName, type: LiquibaseBaseTask) {
         group = 'Liquibase'
         command = 'updateSQL'
       }
     }
 
-    project.task('updateCount', type: LiquibaseTask) {
+    project.task('updateCount', type: LiquibaseBaseTask) {
       group = 'Liquibase'
       command = 'updateCount'
       args = [ System.properties['liquibase.count'] ]
     }
 
-    project.task('rollback', type: LiquibaseTask) {
+    project.task('rollback', type: LiquibaseBaseTask) {
       group = 'Liquibase'
       if(System.properties['liquibase.count']) {
         command = 'rollbackCount'
@@ -85,7 +85,7 @@ class LiquibasePlugin
       }
     }
 
-    project.task('rollbackSQL', type: LiquibaseTask) {
+    project.task('rollbackSQL', type: LiquibaseBaseTask) {
       group = 'Liquibase'
       if(System.properties['liquibase.count']) {
         command = 'rollbackCountSQL'
@@ -101,25 +101,22 @@ class LiquibasePlugin
       }
     }
 
-    project.task(type: LiquibaseTask) {
+    project.task(type: LiquibaseBaseTask) {
       command = 'diff'
       group = 'Liquibase'
       options = [ "--referenceUrl=${System.properties['liquibase.referenceUrl']}", "--referenceUsername=${System.properties['liquibase.referenceUsername']}", "--referencePassword=${System.properties['liquibase.referencePassword']}", 'diff' ]
     }
 
-    project.task('tag', type: LiquibaseTask) {
+    project.task('tag', type: LiquibaseBaseTask) {
       command = 'tag'
       group = 'Liquibase'
       options = [ "${System.properties['liquibase.tag']}" ]
     }
 
-    project.task('dbDoc', type: LiquibaseTask) {
+    project.task('dbDoc', type: LiquibaseDbDocTask) {
       command = 'dbDoc'
       group = 'Liquibase'
       docDir = project.file("${project.buildDir}/database/docs")
-      println docDir
-      options = [ docDir ]
-      println options
     }
   }
 

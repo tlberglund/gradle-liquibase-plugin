@@ -26,7 +26,7 @@ import org.gradle.api.tasks.TaskAction
 import liquibase.integration.commandline.Main
 
 
-class LiquibaseTask extends DefaultTask {
+class LiquibaseBaseTask extends DefaultTask {
   Database database
   def changeLogFile
   def command
@@ -57,10 +57,8 @@ class LiquibaseTask extends DefaultTask {
       args += command
     }
 
-    println args
     args += (options ? options : [])
-    println args
-    
+
     Main.main(args as String[])
   }
 }

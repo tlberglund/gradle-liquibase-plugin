@@ -28,7 +28,8 @@ class LiquibaseDatabaseConvention {
 
   final NamedDomainObjectContainer<Database> databases
   final NamedDomainObjectContainer<ChangeLog> changelogs
-  def workingDatabase
+  Database workingDatabase
+  String context
 
   LiquibaseDatabaseConvention(NamedDomainObjectContainer<Database> databases,
                               NamedDomainObjectContainer<Database> changelogs) {

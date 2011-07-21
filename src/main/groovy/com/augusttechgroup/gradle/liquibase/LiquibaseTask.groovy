@@ -44,14 +44,23 @@ class LiquibaseTask extends DefaultTask {
     }
 
     def args = [ "--url=${database.url}", "--password=${database.password}", "--username=${database.username}" ]
+
     if(changeLogFile) {
       args += "--changeLogFile=${changeLogFile.absolutePath}"
     }
+
+    if(project.context) {
+      args += "--contexts=${project.context}"
+    }
+
     if(command) {
       args += command
     }
 
-    args << (options ? options : [])
+    println args
+    args += (options ? options : [])
+    println args
+    
     Main.main(args as String[])
   }
 }

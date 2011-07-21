@@ -3,15 +3,21 @@ apply plugin: 'maven'
 
 version = '0.5'
 group = 'com.augusttechgroup'
-artifact = 'liquibase-plugin'
+artifact = 'gradle-liquibase-plugin'
 
 repositories {
   mavenCentral()
+  mavenLocal()
 }
 
 dependencies {
   groovy 'org.codehaus.groovy:groovy:1.8.0'
   compile gradleApi()
   compile 'org.liquibase:liquibase-core:2.0.1'
+  runtime 'org.codehaus.groovy:groovy:1.8.0'
+  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7'
 }
 
+jar {
+  baseName = artifact
+}

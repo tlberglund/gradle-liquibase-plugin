@@ -19,11 +19,12 @@
  *
  */
 
-package com.augusttechgroup.gradle.liquibase
+package com.augusttechgroup.gradle.liquibase.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import liquibase.integration.commandline.Main
+import com.augusttechgroup.gradle.liquibase.Database
 
 
 class LiquibaseBaseTask extends DefaultTask {

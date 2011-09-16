@@ -1,23 +1,112 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
-version = '0.5-SNAPSHOT'
+version = '0.5'
 group = 'com.augusttechgroup'
 artifact = 'gradle-liquibase-plugin'
 
+configurations { 
+  deployment
+  published.extendsFrom archives, signatures
+}
+
 repositories {
   mavenCentral()
-  mavenLocal()
 }
 
 dependencies {
   groovy 'org.codehaus.groovy:groovy:1.8.0'
   compile gradleApi()
+  deployment "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-7"
   compile 'org.liquibase:liquibase-core:2.0.1'
   runtime 'org.codehaus.groovy:groovy:1.8.0'
-  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7'
+  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.0'
 }
 
 jar {
   baseName = artifact
 }
+
+
+task sourceJar(type: Jar) {
+  description = 'An archive of the source code for Maven Central'
+  baseName = artifact
+  classifier = 'sources'
+  from sourceSets.main.groovy
+}
+
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+  description = 'An archive of the GroovyDocs for Maven Central'
+  baseName = artifact
+  classifier = 'javadoc'
+  from fileTree(groovydoc.destinationDir)
+}
+
+artifacts { 
+  archives groovydocJar, sourceJar
+}
+
+signing {
+  sign configurations.archives
+}
+
+
+install {
+  repositories.mavenInstaller {
+    pom.project(pomConfiguration)
+  }
+}
+
+
+uploadPublished {
+  dependsOn << [ signArchives ]
+  repositories.mavenDeployer {
+    beforeDeployment { deployment ->
+      signPom(deployment)
+    }
+    name = 'mavenCentralReleaseDeployer'
+    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") { 
+      authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
+      releases(updatePolicy: 'always')
+      snapshots(updatePolicy: 'never')
+    }
+    pom.project(pomConfiguration)
+  }
+}
+
+
+
+
+//
+// A single place to create the POM configuration, so it can be
+// applied from the install and the upload tasks.
+//
+def getPomConfiguration() { 
+  return {
+    name('Gradle Liquibase Plugin')
+    description('A Gradle plugin for the Liquibase database refactoring tool.')
+    url('https://github.com/tlberglund/gradle-liquibase-plugin')
+    licenses {
+      license {
+        name 'The Apache Software License, Version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        distribution 'repo'
+      }
+    }
+    developers {
+      developer {
+        id('tlberglund')
+        name('Tim Berglund')
+        email('tlberglund@gmail.com')
+      }
+    }
+    scm {
+      connection('scm:https://tlberglund@github.com/tlberglund/gradle-liquibase-plugin')
+      developerConnection('scm:git@github.com:tlberglund/gradle-liquibase-plugin.git')
+      url('https://github.com/tlberglund/gradle-liquibase-plugin')
+    }
+  }
+}
+

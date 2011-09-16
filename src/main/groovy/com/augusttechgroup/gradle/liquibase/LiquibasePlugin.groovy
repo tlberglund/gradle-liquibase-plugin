@@ -23,6 +23,9 @@ package com.augusttechgroup.gradle.liquibase
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
+import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseBaseTask
+import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseDbDocTask
+import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseDiffTask
 
 
 class LiquibasePlugin
@@ -101,10 +104,9 @@ class LiquibasePlugin
       }
     }
 
-    project.task(type: LiquibaseBaseTask) {
+    project.task('diff', type: LiquibaseDiffTask) {
       command = 'diff'
       group = 'Liquibase'
-      options = [ "--referenceUrl=${System.properties['liquibase.referenceUrl']}", "--referenceUsername=${System.properties['liquibase.referenceUsername']}", "--referencePassword=${System.properties['liquibase.referencePassword']}", 'diff' ]
     }
 
     project.task('tag', type: LiquibaseBaseTask) {

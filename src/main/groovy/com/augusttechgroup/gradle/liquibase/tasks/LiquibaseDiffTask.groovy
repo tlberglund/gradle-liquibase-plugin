@@ -18,15 +18,22 @@
  *  http://augusttechgroup.com/tim/about
  */
 
-package com.augusttechgroup.gradle.liquibase
+package com.augusttechgroup.gradle.liquibase.tasks
 
-class LiquibaseDbDocTask
+import com.augusttechgroup.gradle.liquibase.Database
+
+/**
+ * <p></p>
+ * 
+ * @author Tim Berglund
+ */
+class LiquibaseDiffTask
   extends LiquibaseBaseTask
 {
-  File docDir
+  Database referenceDatabase
 
-  void setDocDir(File docDir) {
-    this.docDir = docDir
-    options = [ docDir.absolutePath ]
+  void setReferenceDatabase(Database referenceDatabase) {
+    this.referenceDatabase = referenceDatabase
+    options = [ "--referenceUrl=${referenceDatabase.url}", "--referenceUsername=${referenceDatabase.username}", "--referencePassword=${referenceDatabase.password}", 'diff' ]
   }
 }

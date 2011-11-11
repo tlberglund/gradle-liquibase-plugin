@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = '0.5'
+version = '0.5.1'
 group = 'com.augusttechgroup'
 artifact = 'gradle-liquibase-plugin'
 
@@ -26,6 +26,10 @@ dependencies {
 
 jar {
   baseName = artifact
+}
+
+task wrapper(type: Wrapper) { 
+  gradleVersion = '1.0-milestone-5'
 }
 
 

@@ -39,9 +39,14 @@ class LiquibasePlugin
 
 
   void applyConvention(Project project) {
-    def databases = project.container(Database) { name -> new Database(name) }
-    def changelogs = project.container(ChangeLog) { name -> new ChangeLog(name) }
-    project.convention.plugins.liquibase = new LiquibaseDatabaseConvention(databases, changelogs)
+    def databases = project.container(Database) { name -> 
+      new Database(name) 
+    }
+    def changelogs = project.container(ChangeLog) { name -> 
+      new ChangeLog(name) 
+    }
+    project.convention.plugins.liquibase = 
+      new LiquibaseDatabaseConvention(databases, changelogs)
   }
 
   
@@ -62,7 +67,7 @@ class LiquibasePlugin
     [ 'update', 'updateSQL' ].each { taskName ->
       project.task(taskName, type: LiquibaseBaseTask) {
         group = 'Liquibase'
-        command = 'updateSQL'
+        command = taskName
       }
     }
 

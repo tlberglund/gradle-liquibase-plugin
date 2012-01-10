@@ -44,12 +44,7 @@ class LiquibaseBaseTask extends DefaultTask {
       changeLogs = project.defaultChangeLogs
     }
 
-    println changeLogs
-    changeLogs.collect { it.file }.each {  println it }
-
     changeLogs.each { changeLog ->
-      println "EXECUTING ${changeLog.file}"
-
       def args = [ 
         "--url=${database.url}", 
         "--password=${database.password}", 

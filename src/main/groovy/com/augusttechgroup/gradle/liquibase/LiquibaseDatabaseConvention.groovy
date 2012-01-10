@@ -28,11 +28,12 @@ class LiquibaseDatabaseConvention {
 
   final NamedDomainObjectContainer<Database> databases
   final NamedDomainObjectContainer<ChangeLog> changelogs
-  Database workingDatabase
+  Database defaultDatabase
+  def defaultChangeLogs
   String context
 
   LiquibaseDatabaseConvention(NamedDomainObjectContainer<Database> databases,
-                              NamedDomainObjectContainer<Database> changelogs) {
+                              NamedDomainObjectContainer<ChangeLog> changelogs) {
     this.databases = databases
     this.changelogs = changelogs
   }

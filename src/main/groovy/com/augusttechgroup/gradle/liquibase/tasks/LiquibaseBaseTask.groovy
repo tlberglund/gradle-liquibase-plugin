@@ -23,13 +23,13 @@ package com.augusttechgroup.gradle.liquibase.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import liquibase.integration.commandline.Main
+import com.augusttechgroup.gradle.liquibase.Main
 import com.augusttechgroup.gradle.liquibase.Database
 
 
 class LiquibaseBaseTask extends DefaultTask {
   Database database
-  def changeLogFile
+  def changeLogs
   def command
   def options = []
 
@@ -37,29 +37,39 @@ class LiquibaseBaseTask extends DefaultTask {
   def liquibaseAction() {
 
     if(database == null) {
-      database = project.workingDatabase
+      database = project.defaultDatabase
     }
 
-    if(changeLogFile == null) {
-      changeLogFile = project.changelogs.main.file
+    if(changeLogs == null) {
+      changeLogs = project.defaultChangeLogs
     }
 
-    def args = [ "--url=${database.url}", "--password=${database.password}", "--username=${database.username}" ]
+    println changeLogs
+    changeLogs.collect { it.file }.each {  println it }
 
-    if(changeLogFile) {
-      args += "--changeLogFile=${changeLogFile.absolutePath}"
+    changeLogs.each { changeLog ->
+      println "EXECUTING ${changeLog.file}"
+
+      def args = [ 
+        "--url=${database.url}", 
+        "--password=${database.password}", 
+        "--username=${database.username}",
+        "--changeLogFile=${changeLog.file.absolutePath}"
+      ]
+
+      if(project.context) {
+        args += "--contexts=${project.context}"
+      }
+
+      if(command) {
+        args += command
+      }
+
+      args += (options ? options : [])
+
+      println "Calling MAIN"
+      Main.main(args as String[])
+      println "DONE calling MAIN"
     }
-
-    if(project.context) {
-      args += "--contexts=${project.context}"
-    }
-
-    if(command) {
-      args += command
-    }
-
-    args += (options ? options : [])
-
-    Main.main(args as String[])
   }
 }

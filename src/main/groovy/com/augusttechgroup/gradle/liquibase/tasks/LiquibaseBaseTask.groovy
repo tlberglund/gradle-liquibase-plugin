@@ -64,9 +64,7 @@ class LiquibaseBaseTask extends DefaultTask {
         args += command
       }
 
-      println "Calling MAIN"
       Main.main(args as String[])
-      println "DONE calling MAIN"
     }
   }
 }

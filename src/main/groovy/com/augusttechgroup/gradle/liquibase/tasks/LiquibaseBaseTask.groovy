@@ -43,7 +43,7 @@ class LiquibaseBaseTask extends DefaultTask {
     if(changeLogs == null) {
       changeLogs = project.defaultChangeLogs
     }
-
+    
     changeLogs.each { changeLog ->
       def args = [ 
         "--url=${database.url}", 
@@ -51,7 +51,7 @@ class LiquibaseBaseTask extends DefaultTask {
         "--username=${database.username}",
         "--changeLogFile=${changeLog.file.absolutePath}"
       ]
-
+      
       if(project.context) {
         args += "--contexts=${project.context}"
       }

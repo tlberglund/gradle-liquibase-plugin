@@ -55,12 +55,14 @@ class LiquibaseBaseTask extends DefaultTask {
       if(project.context) {
         args += "--contexts=${project.context}"
       }
+      
+      if (options) {
+        args += options
+      }
 
       if(command) {
         args += command
       }
-
-      args += (options ? options : [])
 
       println "Calling MAIN"
       Main.main(args as String[])

@@ -37,11 +37,11 @@ class LiquibaseBaseTask extends DefaultTask {
   def liquibaseAction() {
 
     if(database == null) {
-      database = project.defaultDatabase
+      database = project.liquibase.defaultDatabase
     }
 
     if(changeLogs == null) {
-      changeLogs = project.defaultChangeLogs
+      changeLogs = project.liquibase.changelogs
     }
     
     changeLogs.each { changeLog ->
@@ -52,8 +52,8 @@ class LiquibaseBaseTask extends DefaultTask {
         "--changeLogFile=${changeLog.file.absolutePath}"
       ]
       
-      if(project.context) {
-        args += "--contexts=${project.context}"
+      if(project.liquibase.context) {
+        args += "--contexts=${project.liquibase.context}"
       }
       
       if (options) {

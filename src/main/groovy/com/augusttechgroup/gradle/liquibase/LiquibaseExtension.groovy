@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Tim Berglund
+ * Copyright 2011-2012 Tim Berglund
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  * Tim Berglund
- * The August Technology Group
- * http://augusttechgroup.com/tim/about
+ * http://timberglund.com
  *
  */
 
@@ -23,17 +22,15 @@ package com.augusttechgroup.gradle.liquibase
 
 import org.gradle.api.NamedDomainObjectContainer
 
-
-class LiquibaseDatabaseConvention {
+class LiquibaseExtension {
 
   final NamedDomainObjectContainer<Database> databases
   final NamedDomainObjectContainer<ChangeLog> changelogs
   Database defaultDatabase
-  def defaultChangeLogs
   String context
 
-  LiquibaseDatabaseConvention(NamedDomainObjectContainer<Database> databases,
-                              NamedDomainObjectContainer<ChangeLog> changelogs) {
+  LiquibaseExtension(NamedDomainObjectContainer<Database> databases,
+                     NamedDomainObjectContainer<ChangeLog> changelogs) {
     this.databases = databases
     this.changelogs = changelogs
   }

@@ -2,9 +2,9 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = '0.6.1'
+version = '0.7-SNAPSHOT'
 group = 'com.augusttechgroup'
-artifact = 'gradle-liquibase-plugin'
+def artifact = 'gradle-liquibase-plugin'
 
 configurations { 
   deployment
@@ -12,6 +12,7 @@ configurations {
 }
 
 repositories {
+  mavenLocal()
   mavenCentral()
 }
 
@@ -28,7 +29,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) { 
-  gradleVersion = '1.0-milestone-9'
+  gradleVersion = '1.0'
 }
 
 

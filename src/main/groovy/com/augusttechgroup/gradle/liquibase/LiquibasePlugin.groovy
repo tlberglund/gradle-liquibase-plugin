@@ -33,20 +33,21 @@ class LiquibasePlugin
 
 
   void apply(Project project) {
-    applyConvention(project)
+    applyExtension(project)
     applyTasks(project)
   }
 
 
-  void applyConvention(Project project) {
+  void applyExtension(Project project) {
     def databases = project.container(Database) { name -> 
       new Database(name) 
     }
     def changelogs = project.container(ChangeLog) { name -> 
       new ChangeLog(name) 
     }
-    project.convention.plugins.liquibase = 
-      new LiquibaseDatabaseConvention(databases, changelogs)
+    project.configure(project) {
+      extensions.create("liquibase", LiquibaseExtension, databases, changelogs)
+    }
   }
 
   
@@ -74,7 +75,7 @@ class LiquibasePlugin
     project.task('updateCount', type: LiquibaseBaseTask) {
       group = 'Liquibase'
       command = 'updateCount'
-      args = [ System.properties['liquibase.count'] ]
+      options = [ System.properties['liquibase.count'] ]
     }
 
     project.task('rollback', type: LiquibaseBaseTask) {

@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = '0.7-SNAPSHOT'
+version = '0.7'
 group = 'com.augusttechgroup'
 def artifact = 'gradle-liquibase-plugin'
 
@@ -12,7 +12,6 @@ configurations {
 }
 
 repositories {
-  mavenLocal()
   mavenCentral()
 }
 
@@ -20,7 +19,7 @@ dependencies {
   groovy 'org.codehaus.groovy:groovy:1.8.6'
   compile gradleApi()
   deployment "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-7"
-  compile 'org.liquibase:liquibase-core:2.0.3'
+  compile 'org.liquibase:liquibase-core:2.0.5'
   runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.3'
 }
 
@@ -29,7 +28,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) { 
-  gradleVersion = '1.0'
+  gradleVersion = '1.2'
 }
 
 

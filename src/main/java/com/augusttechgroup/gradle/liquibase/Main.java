@@ -592,6 +592,11 @@ public class Main {
                 CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams), database);
                 return;
             } else if ("generateChangeLog".equalsIgnoreCase(command)) {
+	            File f = new File(changeLogFile);
+	            if ( f.exists() ) {
+		            throw new IOException("Cannot generate changelog: " +
+				            changeLogFile + " already exists!");
+	            }
                 CommandLineUtils.doGenerateChangeLog(changeLogFile, database, defaultSchemaName, StringUtils.trimToNull(diffTypes), StringUtils.trimToNull(changeSetAuthor), StringUtils.trimToNull(changeSetContext), StringUtils.trimToNull(dataDir));
                 return;
             }

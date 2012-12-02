@@ -72,90 +72,56 @@ public class Main {
 
     protected Map<String, Object> changeLogParameters = new HashMap<String, Object>();
 
-    public static void main(String args[]) throws CommandLineParsingException, IOException {
-        try {
-            String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
-            if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
-                System.out.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
-                return;
-            }
+	public static void main(String args[]) throws Exception {
+		String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
+		if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
+			System.out.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
+			return;
+		}
 
-            Main main = new Main();
-            if (args.length == 1 && "--help".equals(args[0])) {
-                main.printHelp(System.out);
-                return;
-            } else if (args.length == 1 && "--version".equals(args[0])) {
-                System.out.println("Liquibase Version: " + LiquibaseUtil.getBuildVersion() + StreamUtil.getLineSeparator());
-                return;
-            }
+		Main main = new Main();
+		if (args.length == 1 && "--help".equals(args[0])) {
+			main.printHelp(System.out);
+			return;
+		} else if (args.length == 1 && "--version".equals(args[0])) {
+			System.out.println("Liquibase Version: " + LiquibaseUtil.getBuildVersion() + StreamUtil.getLineSeparator());
+			return;
+		}
 
-            try {
-                main.parseOptions(args);
-            } catch (CommandLineParsingException e) {
-                main.printHelp(Arrays.asList(e.getMessage()), System.out);
-                //System.exit(-2);
-                return;
-            }
+		try {
+			main.parseOptions(args);
+		} catch (CommandLineParsingException e) {
+			main.printHelp(Arrays.asList(e.getMessage()), System.out);
+			//System.exit(-2);
+			return;
+		}
 
-            File propertiesFile = new File(main.defaultsFile);
-            File localPropertiesFile = new File(main.defaultsFile.replaceFirst("(\\.[^\\.]+)$", ".local$1"));
+		File propertiesFile = new File(main.defaultsFile);
+		File localPropertiesFile = new File(main.defaultsFile.replaceFirst("(\\.[^\\.]+)$", ".local$1"));
 
-            if (localPropertiesFile.exists()) {
-                main.parsePropertiesFile(new FileInputStream(localPropertiesFile));
-            }
-            if (propertiesFile.exists()) {
-                main.parsePropertiesFile(new FileInputStream(propertiesFile));
-            }
+		if (localPropertiesFile.exists()) {
+			main.parsePropertiesFile(new FileInputStream(localPropertiesFile));
+		}
+		if (propertiesFile.exists()) {
+			main.parsePropertiesFile(new FileInputStream(propertiesFile));
+		}
 
-            List<String> setupMessages = main.checkSetup();
-            if (setupMessages.size() > 0) {
-                main.printHelp(setupMessages, System.out);
-                return;
-            }
+		List<String> setupMessages = main.checkSetup();
+		if (setupMessages.size() > 0) {
+			main.printHelp(setupMessages, System.out);
+			return;
+		}
 
-            try {
-                main.applyDefaults();
-                main.configureClassLoader();
-                main.doMigration();
-            } catch (Throwable e) {
-                String message = e.getMessage();
-                if (e.getCause() != null) {
-                    message = e.getCause().getMessage();
-                }
-                if (message == null) {
-                    message = "Unknown Reason";
-                }
-
-                if (e.getCause() instanceof ValidationFailedException) {
-                    ((ValidationFailedException) e.getCause()).printDescriptiveError(System.out);
-                } else {
-                    System.out.println("Liquibase Update Failed: " + message);
-                    LogFactory.getLogger().severe(message, e);
-                    System.out.println(generateLogLevelWarningMessage());
-                }
-                //System.exit(-1);
-                return;
-            }
-
-            if ("update".equals(main.command)) {
-                System.out.println("Liquibase Update Successful");
-            } else if (main.command.startsWith("rollback") && !main.command.endsWith("SQL")) {
-                System.out.println("Liquibase Rollback Successful");
-            } else if (!main.command.endsWith("SQL")) {
-                System.out.println("Liquibase '"+main.command+"' Successful");
-            }
-        } catch (Throwable e) {
-            String message = "Unexpected error running Liquibase: " + e.getMessage();
-            System.out.println(message);
-            try {
-                LogFactory.getLogger().severe(message, e);
-            } catch (Exception e1) {
-                e.printStackTrace();
-            }
-            //System.exit(-3);
-            return;
-        }
-        //System.exit(0);
+		main.applyDefaults();
+		main.configureClassLoader();
+		main.doMigration();
+		if ("update".equals(main.command)) {
+			System.out.println("Liquibase Update Successful");
+		} else if (main.command.startsWith("rollback") && !main.command.endsWith("SQL")) {
+			System.out.println("Liquibase Rollback Successful");
+		} else if (!main.command.endsWith("SQL")) {
+			System.out.println("Liquibase '"+main.command+"' Successful");
+		}
     }
 
     private static String generateLogLevelWarningMessage() {

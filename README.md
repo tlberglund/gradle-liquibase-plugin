@@ -1,3 +1,7 @@
+Example
+-------
+For an example of how to use this plugin, see the [Liquibase Workshop](https://github.com/tlberglund/liquibase-workshop) repo. That project contains a `build.gradle` showing exactly how to configure the plugin, and an example directory setup as well.
+
 News
 ----
 Users of the latest version (0.7) of the Liquibase plugin need to change the

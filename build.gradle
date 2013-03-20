@@ -21,7 +21,7 @@ dependencies {
   compile gradleApi()
   deployment "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-7"
   compile 'org.liquibase:liquibase-core:2.0.5'
-  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.3'
+  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.6'
 }
 
 jar {
@@ -29,7 +29,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) { 
-  gradleVersion = '1.2'
+  gradleVersion = '1.4'
 }
 
 

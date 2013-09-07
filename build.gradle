@@ -20,7 +20,7 @@ dependencies {
   groovy 'org.codehaus.groovy:groovy:1.8.6'
   compile gradleApi()
   deployment "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-7"
-  compile 'org.liquibase:liquibase-core:3.0.3'
+  compile 'org.liquibase:liquibase-core:3.0.4'
   runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.6'
 }
 

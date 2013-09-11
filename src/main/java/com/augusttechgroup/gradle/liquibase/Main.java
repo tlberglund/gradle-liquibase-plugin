@@ -2,10 +2,12 @@ package com.augusttechgroup.gradle.liquibase;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
+import liquibase.diff.output.DiffOutputControl;
 import liquibase.exception.CommandLineParsingException;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.ValidationFailedException;
 import liquibase.lockservice.LockService;
+import liquibase.lockservice.LockServiceFactory;
 import liquibase.logging.LogFactory;
 import liquibase.logging.LogLevel;
 import liquibase.logging.Logger;
@@ -43,6 +45,7 @@ public class Main {
     protected String password;
     protected String url;
     protected String databaseClass;
+    protected String defaultCatalogName;
     protected String defaultSchemaName;
     protected String changeLogFile;
     protected String classpath;
@@ -612,8 +615,8 @@ public class Main {
         FileSystemResourceAccessor fsOpener = new FileSystemResourceAccessor();
         CommandLineResourceAccessor clOpener = new CommandLineResourceAccessor(classLoader);
         Database database = CommandLineUtils.createDatabaseObject(classLoader, this.url, 
-            this.username, this.password, this.driver, this.defaultSchemaName, 
-            this.databaseClass, this.driverPropertiesFile);
+            this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName,
+            false, false, this.databaseClass, this.driverPropertiesFile, null, null);
         try {
 
 
@@ -623,10 +626,11 @@ public class Main {
                 CommandLineUtils.doDiff(createReferenceDatabaseFromCommandParams(commandParams), database);
                 return;
             } else if ("diffChangeLog".equalsIgnoreCase(command)) {
-                CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams), database);
+                CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams), database, new DiffOutputControl());
                 return;
             } else if ("generateChangeLog".equalsIgnoreCase(command)) {
-                CommandLineUtils.doGenerateChangeLog(changeLogFile, database, defaultSchemaName, StringUtils.trimToNull(diffTypes), StringUtils.trimToNull(changeSetAuthor), StringUtils.trimToNull(changeSetContext), StringUtils.trimToNull(dataDir));
+                CommandLineUtils.doGenerateChangeLog(changeLogFile, database, defaultCatalogName, defaultSchemaName, StringUtils.trimToNull(diffTypes), StringUtils.trimToNull(changeSetAuthor),
+                    StringUtils.trimToNull(changeSetContext), StringUtils.trimToNull(dataDir), new DiffOutputControl());
                 return;
             }
 
@@ -641,7 +645,7 @@ public class Main {
                 liquibase.reportLocks(System.out);
                 return;
             } else if ("releaseLocks".equalsIgnoreCase(command)) {
-                LockService.getInstance(database).forceReleaseLock();
+                LockServiceFactory.getInstance().getLockService(database).forceReleaseLock();
                 System.out.println("Successfully released all database change log locks for " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
                 return;
             } else if ("tag".equalsIgnoreCase(command)) {
@@ -795,7 +799,8 @@ public class Main {
             throw new CommandLineParsingException("referenceUrl parameter missing");
         }
 
-        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultSchemaName, null, null);
+        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName,
+                false, false, databaseClass, null, null, null);
 
     }
 

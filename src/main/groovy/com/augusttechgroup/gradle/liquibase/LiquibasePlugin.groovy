@@ -52,6 +52,11 @@ class LiquibasePlugin
 
   
   void applyTasks(Project project) {
+	  // parse the system properties once and use the resulting options for all
+	  // tasks.
+
+	  // Create basic tasks that don't take a value.
+	  def liquibaseOptions = parseOptions()
     [
       'status': 'Outputs count (list if --verbose) of unrun change sets.',
 			'validate': 'Checks the changelog for errors.',
@@ -65,96 +70,75 @@ class LiquibasePlugin
 			'clearChecksums': 'Removes current checksums from database. On next run checksums will be recomputed.',
       'generateChangelog': 'generateChangeLog of the database to standard out. v1.8 requires the dataDir parameter currently.',
       'futureRollbackSQL': 'Writes SQL to roll back the database to the current state after the changes in the changeslog have been applied.',
+	    'update': 'Updates the database to the current version.',
+	    'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
 			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.'
     ].each { taskName, taskDescription ->
       project.task(taskName, type: LiquibaseBaseTask) {
         group = 'Liquibase'
-        command = taskName
 	      description = taskDescription
+	      options = liquibaseOptions
+	      command = taskName
       }
     }
 
-    [
-			'update': 'Updates the database to the current version.',
-			'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.'
-    ].each { taskName, taskDescription ->
-      project.task(taskName, type: LiquibaseBaseTask) {
-        group = 'Liquibase'
-        command = taskName
-	      description = taskDescription
-      }
-    }
-
+	  // Create basic tasks that do take a value.
 	  [
-	    'updateCount': 'Applies the next <liquibase.count> change sets.',
-			'updateCountSql' : 'Writes SQL to apply the next <liquibase.count> change sets to STDOUT.'
+	    'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
+			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',
+			'tag': 'Tags the current database state with <liquibase.commandValue> for future rollback',
+		  'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
+		  'rollbackToDate' : 'Rolls back the database to the state it was in at the <liquibase.commandValue> date/time.',
+		  'rollbackCount' : 'Rolls back the last <liquibase.commandValue> change sets.',
+			'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
+			'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
+			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.'
 	  ].each { taskName, taskDescription ->
       project.task(taskName, type: LiquibaseBaseTask) {
         group = 'Liquibase'
-        command = taskName
-        options = [ System.properties['liquibase.count'] ]
 	      description = taskDescription
+	      options = liquibaseOptions
+	      command = taskName
+	      value = System.properties['liquibase.commandValue']
       }
 	  }
 
-    project.task('rollback', type: LiquibaseBaseTask) {
-      group = 'Liquibase'
-      if(System.properties['liquibase.count']) {
-        command = 'rollbackCount'
-        options = [ System.properties['liquibase.count'] ]
-	      description = 'Rolls back the last <liquibase.count> change sets'
-      }
-      else if(System.properties['liquibase.date']) {
-        command = 'rollbackDate'
-        options = [ System.properties['liquibase.date'] ]
-	      description = 'Rolls back the database to the state it was in at <liquibase.date>'
-      }
-      else {
-        command = 'rollback'
-        options = [ System.properties['liquibase.tag'] ]
-	      description = 'Rolls back the database to the state it was in when <liquibase.tag> was applied.'
-      }
-    }
-
-    project.task('rollbackSQL', type: LiquibaseBaseTask) {
-      group = 'Liquibase'
-      if(System.properties['liquibase.count']) {
-        command = 'rollbackCountSQL'
-        options = [ System.properties['liquibase.count'] ]
-	      description = 'Writes SQL to roll back the last <liquibase.count> change sets to STDOUT.'
-      }
-      else if(System.properties['liquibase.date']) {
-        command = 'rollbackDateSQL'
-        options = [ System.properties['liquibase.date'] ]
-	      description = 'Writes SQL to roll back the database to the state it was in at <liquibase.date> to STDOUT.'
-      }
-      else {
-        command = 'rollbackSQL'
-        options = [ System.properties['liquibase.tag'] ]
-	      description = 'Writes SQL to roll back the database to the state it was in when <liquibase.tag> was applied to STDOUT.'
-      }
-    }
-
+	  // Create the diff task
     project.task('diff', type: LiquibaseDiffTask) {
-      command = 'diff'
       group = 'Liquibase'
 	    description = 'Writes description of differences to standard out.'
+	    options = liquibaseOptions
+	    command = 'diff'
     }
 
-    project.task('tag', type: LiquibaseBaseTask) {
-      command = 'tag'
-      group = 'Liquibase'
-      options = [ "${System.properties['liquibase.tag']}" ]
-	    description = 'Tags the current database state for future rollback'
-    }
-
+	  // Create the dbDoc task
     project.task('dbDoc', type: LiquibaseDbDocTask) {
-      command = 'dbDoc'
-      group = 'Liquibase'
-      docDir = project.file("${project.buildDir}/database/docs")
+	    group = 'Liquibase'
 	    description = 'Generates Javadoc-like documentation based on current database and change log'
+	    options = liquibaseOptions
+	    command = 'dbDoc'
+	    docDir = project.file("${project.buildDir}/database/docs")
     }
   }
+
+	/**
+	 * Parse the system properties that start with "liquibase."  What comes after
+	 * the dot is assumed to be a liquibase option name.  At the moment, all
+	 * options require a value, so we just translate "-Dliquibase.something=value"
+	 * to "--something=value" and add that to options that are passed to all
+	 * commands. We have a special exclude for "liquibase.commandValue" which is used
+	 * to pass a value to a command.
+	 * @return the
+	 */
+	def parseOptions() {
+		def options = []
+		System.properties.findAll { it.key.startsWith("liquibase.") }.each { k, v ->
+			if ( k != "liquibase.commandValue") {
+				options << "--${k.substring(10)}=${v}"
+			}
+		}
+		return options
+	}
 
 }
 

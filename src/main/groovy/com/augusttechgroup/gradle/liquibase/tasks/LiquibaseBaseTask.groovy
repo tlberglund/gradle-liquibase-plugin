@@ -32,6 +32,7 @@ class LiquibaseBaseTask extends DefaultTask {
   def changeLogs
   def command
   def options = []
+	def value
 
   @TaskAction
   def liquibaseAction() {
@@ -63,6 +64,10 @@ class LiquibaseBaseTask extends DefaultTask {
       if(command) {
         args += command
       }
+
+	    if(value) {
+		    args += value
+	    }
 
       Main.main(args as String[])
     }

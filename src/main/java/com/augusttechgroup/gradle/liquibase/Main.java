@@ -53,8 +53,8 @@ public class Main {
     protected String databaseClass;
 	protected String defaultCatalogName;
     protected String defaultSchemaName;
-	protected boolean outputDefaultCatalog = true;
-	protected boolean outputDefaultSchema = true;
+	protected Boolean outputDefaultCatalog = true;
+	protected Boolean outputDefaultSchema = true;
 	protected String changeLogFile;
     protected String classpath;
     protected String contexts;
@@ -172,7 +172,7 @@ public class Main {
 	        } catch (Exception e1) {
 		        e.printStackTrace();
 	        }
-	        throw new LiquibaseException("Liquibase Update Failed: " + message);
+	        throw new LiquibaseException("Liquibase Update Failed: " + message, e);
         }
     }
 

@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
-version = '0.7'
+version = '1.0.0-SNAPSHOT'
 group = 'com.augusttechgroup'
 def artifact = 'gradle-liquibase-plugin'
 
@@ -20,18 +20,13 @@ dependencies {
   groovy 'org.codehaus.groovy:groovy:1.8.6'
   compile gradleApi()
   deployment "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-7"
-  compile 'org.liquibase:liquibase-core:2.0.5'
-  runtime 'com.augusttechgroup:groovy-liquibase-dsl:0.7.6'
+  compile 'org.liquibase:liquibase-core:3.0.7'
+  runtime 'com.augusttechgroup:groovy-liquibase-dsl:1.0.0-SNAPSHOT'
 }
 
 jar {
   baseName = artifact
 }
-
-task wrapper(type: Wrapper) { 
-  gradleVersion = '1.4'
-}
-
 
 task sourceJar(type: Jar) {
   description = 'An archive of the source code for Maven Central'

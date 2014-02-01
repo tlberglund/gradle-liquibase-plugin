@@ -22,24 +22,27 @@ package com.augusttechgroup.gradle.liquibase
 
 import org.gradle.api.NamedDomainObjectContainer
 
+/**
+ * This is the Gradle extension that configures the Liquibase plugin.  All
+ * configuration options will be in the {@code liquibase} block of the
+ * build.gradle file.  This block consists of a list of activities and a run
+ * list.
+ */
 class LiquibaseExtension {
+  final NamedDomainObjectContainer<Activity> activities
+	/**
+	 * Define the list of activities that run for each liquibase task.  This
+	 * is a string of comma separated activity names.  This is a string instead
+	 * of an array to facilitate the use of Gradle properties.  If no runList is
+	 * defined, the plugin will run all activities.
+	 */
+	def runList
 
-  final NamedDomainObjectContainer<Database> databases
-  final NamedDomainObjectContainer<ChangeLog> changelogs
-  Database defaultDatabase
-  String context
-
-  LiquibaseExtension(NamedDomainObjectContainer<Database> databases,
-                     NamedDomainObjectContainer<ChangeLog> changelogs) {
-    this.databases = databases
-    this.changelogs = changelogs
+  LiquibaseExtension(NamedDomainObjectContainer<Activity> activities) {
+    this.activities = activities
   }
 
-  def databases(Closure closure) {
-    databases.configure(closure)
-  }
-
-  def changelogs(Closure closure) {
-    changelogs.configure(closure)
+  def activities(Closure closure) {
+	  activities.configure(closure)
   }
 }

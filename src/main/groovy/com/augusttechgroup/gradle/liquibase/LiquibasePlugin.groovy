@@ -23,10 +23,6 @@ package com.augusttechgroup.gradle.liquibase
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
-import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseBaseTask
-import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseDbDocTask
-import com.augusttechgroup.gradle.liquibase.tasks.LiquibaseDiffTask
-
 
 class LiquibasePlugin
   implements Plugin<Project> {
@@ -39,24 +35,16 @@ class LiquibasePlugin
 
 
   void applyExtension(Project project) {
-    def databases = project.container(Database) { name -> 
-      new Database(name) 
-    }
-    def changelogs = project.container(ChangeLog) { name -> 
-      new ChangeLog(name) 
+    def activities = project.container(Activity) { name ->
+      new Activity(name)
     }
     project.configure(project) {
-      extensions.create("liquibase", LiquibaseExtension, databases, changelogs)
+      extensions.create("liquibase", LiquibaseExtension, activities)
     }
   }
 
-  
   void applyTasks(Project project) {
-	  // parse the system properties once and use the resulting options for all
-	  // tasks.
-
-	  // Create basic tasks that don't take a value.
-	  def liquibaseOptions = parseOptions()
+	  // Create tasks that don't take a value.
     [
       'status': 'Outputs count (list if --verbose) of unrun change sets.',
 			'validate': 'Checks the changelog for errors.',
@@ -72,17 +60,17 @@ class LiquibasePlugin
       'futureRollbackSQL': 'Writes SQL to roll back the database to the current state after the changes in the changeslog have been applied.',
 	    'update': 'Updates the database to the current version.',
 	    'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
-			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.'
+			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.',
+			'diff': 'Writes description of differences to standard out.',
     ].each { taskName, taskDescription ->
-      project.task(taskName, type: LiquibaseBaseTask) {
+      project.task(taskName, type: LiquibaseTask) {
         group = 'Liquibase'
 	      description = taskDescription
-	      options = liquibaseOptions
 	      command = taskName
       }
     }
 
-	  // Create basic tasks that do take a value.
+	  // Create tasks that do take a value.
 	  [
 	    'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
 			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',
@@ -92,53 +80,16 @@ class LiquibasePlugin
 		  'rollbackCount' : 'Rolls back the last <liquibase.commandValue> change sets.',
 			'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
 			'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
-			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.'
+			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
+		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
 	  ].each { taskName, taskDescription ->
-      project.task(taskName, type: LiquibaseBaseTask) {
+      project.task(taskName, type: LiquibaseTask) {
         group = 'Liquibase'
 	      description = taskDescription
-	      options = liquibaseOptions
 	      command = taskName
-	      value = System.properties['liquibase.commandValue']
+	      requiresValue = true
       }
 	  }
-
-	  // Create the diff task
-    project.task('diff', type: LiquibaseDiffTask) {
-      group = 'Liquibase'
-	    description = 'Writes description of differences to standard out.'
-	    options = liquibaseOptions
-	    command = 'diff'
-    }
-
-	  // Create the dbDoc task
-    project.task('dbDoc', type: LiquibaseDbDocTask) {
-	    group = 'Liquibase'
-	    description = 'Generates Javadoc-like documentation based on current database and change log'
-	    options = liquibaseOptions
-	    command = 'dbDoc'
-	    docDir = project.file("${project.buildDir}/database/docs")
-    }
   }
-
-	/**
-	 * Parse the system properties that start with "liquibase."  What comes after
-	 * the dot is assumed to be a liquibase option name.  At the moment, all
-	 * options require a value, so we just translate "-Dliquibase.something=value"
-	 * to "--something=value" and add that to options that are passed to all
-	 * commands. We have a special exclude for "liquibase.commandValue" which is used
-	 * to pass a value to a command.
-	 * @return the
-	 */
-	def parseOptions() {
-		def options = []
-		System.properties.findAll { it.key.startsWith("liquibase.") }.each { k, v ->
-			if ( k != "liquibase.commandValue") {
-				options << "--${k.substring(10)}=${v}"
-			}
-		}
-		return options
-	}
-
 }
 

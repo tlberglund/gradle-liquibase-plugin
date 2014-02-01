@@ -8,6 +8,8 @@ import liquibase.exception.CommandLineParsingException;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.exception.ValidationFailedException;
+import liquibase.integration.commandline.CommandLineResourceAccessor;
+import liquibase.integration.commandline.CommandLineUtils;
 import liquibase.lockservice.LockService;
 import liquibase.lockservice.LockServiceFactory;
 import liquibase.logging.LogFactory;
@@ -17,31 +19,62 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.servicelocator.ServiceLocator;
+import liquibase.util.ISODateFormat;
 import liquibase.util.LiquibaseUtil;
 import liquibase.util.StreamUtil;
 import liquibase.util.StringUtils;
-import liquibase.integration.commandline.CommandLineUtils;
-import liquibase.integration.commandline.CommandLineResourceAccessor;
-import org.gradle.tooling.BuildException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
  * Class for executing Liquibase via the command line.
- * TODO: Verify operation of new arguments:
- * defaultCatalogName, outputDefaultCatalog, outputDefaultSchema,
- * liquibaseSchemaName, liquibaseCatalogName
+ * <p>
+ * This class started life as a copy of Liquibase's
+ * {@code liquibase.integration.commandline.Main} class.  In a perfect world,
+ * the Liquibase Gradle plugin would just call the Liquibase class directly,
+ * and it would do the right thing without having to duplicate the class here.
+ * Unfortunately, there are a couple of problems with this approach.
+ * <p>
+ * First, the Liquibase class assumes it is always called from the command line,
+ * so when something goes wrong, it uses System.exit, which causes problems
+ * when we are trying to run a single task in a build.  We could work around
+ * this problem with a custom security manager, except for...
+ * <p>
+ * The second problem with the Liquibase class is that it winds up writing
+ * the exception stack trace 3 times whenever there is a problem, which often
+ * causes the real problem to have scrolled off the screen.
+ * <p>
+ * I've tried to make the minimal number of changes to this class to get to
+ * work, but there will still be a tedious effort whenever liquibae changes.
+ * We will then have to look at what changed in Liquibase for this class and
+ * apply those changes here.
  */
 public class Main {
     protected ClassLoader classLoader;
@@ -51,16 +84,16 @@ public class Main {
     protected String password;
     protected String url;
     protected String databaseClass;
-	protected String defaultCatalogName;
     protected String defaultSchemaName;
-	protected Boolean outputDefaultCatalog = true;
-	protected Boolean outputDefaultSchema = true;
+	protected String outputDefaultSchema = "true";
+	protected String outputDefaultCatalog = "true";
+	protected String liquibaseCatalogName;
+	protected String liquibaseSchemaName;
+	protected String defaultCatalogName;
 	protected String changeLogFile;
     protected String classpath;
     protected String contexts;
     protected String driverPropertiesFile;
-	protected String liquibaseCatalogName;
-	protected String liquibaseSchemaName;
 	protected Boolean promptForNonLocalDatabase = null;
     protected Boolean includeSystemClasspath;
     protected String defaultsFile = "liquibase.properties";
@@ -78,7 +111,7 @@ public class Main {
     protected String currentDateTimeFunction;
 
     protected String command;
-    protected Set<String> commandParams = new HashSet<String>();
+    protected Set<String> commandParams = new LinkedHashSet<String>();
 
     protected String logLevel;
     protected String logFile;
@@ -103,16 +136,20 @@ public class Main {
         try {
             String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
             if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
-                System.out.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
+                System.err.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
                 return; // Not an error
             }
 
+//            if (!System.getProperties().contains("file.encoding")) {
+//                System.setProperty("file.encoding", "UTF-8");
+//            }
+
             Main main = new Main();
             if (args.length == 1 && "--help".equals(args[0])) {
-                main.printHelp(System.out);
+                main.printHelp(System.err);
                 return; // Not an error
             } else if (args.length == 1 && "--version".equals(args[0])) {
-                System.out.println("Liquibase Version: " + LiquibaseUtil.getBuildVersion() + StreamUtil.getLineSeparator());
+                System.err.println("Liquibase Version: " + LiquibaseUtil.getBuildVersion() + StreamUtil.getLineSeparator());
                 return; // Not an error
             }
 
@@ -120,7 +157,7 @@ public class Main {
                 main.parseOptions(args);
             } catch (CommandLineParsingException e) {
 	            // print the help before throwing the exception
-                main.printHelp(Arrays.asList(e.getMessage()), System.out);
+                main.printHelp(Arrays.asList(e.getMessage()), System.err);
 	            throw e;
             }
 
@@ -136,7 +173,7 @@ public class Main {
 
             List<String> setupMessages = main.checkSetup();
             if (setupMessages.size() > 0) {
-                main.printHelp(setupMessages, System.out);
+                main.printHelp(setupMessages, System.err);
                 throw new LiquibaseException("Liquibase cannot parse the command line arguments");
             }
 
@@ -145,11 +182,11 @@ public class Main {
             main.doMigration();
 
             if ("update".equals(main.command)) {
-                System.out.println("Liquibase Update Successful");
+                System.err.println("Liquibase Update Successful");
             } else if (main.command.startsWith("rollback") && !main.command.endsWith("SQL")) {
-                System.out.println("Liquibase Rollback Successful");
+                System.err.println("Liquibase Rollback Successful");
             } else if (!main.command.endsWith("SQL")) {
-                System.out.println("Liquibase '"+main.command+"' Successful");
+                System.err.println("Liquibase '"+main.command+"' Successful");
             }
         } catch (Throwable e) {
 	        String message = e.getMessage();
@@ -160,14 +197,14 @@ public class Main {
 		        message = "Unknown Reason";
 	        }
 
-	        // At a minimum, put a stack trace to Standard Error
+	        // At a minimum, log the message.
 	        try {
 		        if (e.getCause() instanceof ValidationFailedException) {
 			        ((ValidationFailedException) e.getCause()).printDescriptiveError(System.out);
 		        } else {
-			        System.out.println("Liquibase Update Failed: " + message);
+			        System.err.println("Liquibase Update Failed: " + message);
 			        LogFactory.getLogger().severe(message);
-			        System.out.println(generateLogLevelWarningMessage());
+			        System.err.println(generateLogLevelWarningMessage());
 		        }
 	        } catch (Exception e1) {
 		        e.printStackTrace();
@@ -178,10 +215,10 @@ public class Main {
 
     private static String generateLogLevelWarningMessage() {
         Logger logger = LogFactory.getLogger();
-        if (logger == null || logger.getLogLevel() == null || (logger.getLogLevel().equals(LogLevel.DEBUG))) {
+        if (logger != null && logger.getLogLevel() != null && (logger.getLogLevel().equals(LogLevel.OFF))) {
             return "";
         } else {
-            return "\n\nFor more information, use the --logLevel flag)";
+            return "\n\nFor more information, use the --logLevel flag";
         }
     }
 
@@ -221,7 +258,7 @@ public class Main {
             }
 
             if (isChangeLogRequired(command) && changeLogFile == null) {
-                messages.add("--changeLog is required");
+                messages.add("--changeLogFile is required");
             }
 
 			if (isNoArgCommand(command) && !commandParams.isEmpty()) {
@@ -424,7 +461,7 @@ public class Main {
         stream.println(" updateSQL                      Writes SQL to update database to current");
         stream.println("                                version to STDOUT");
         stream.println(" updateCount <num>              Applies next NUM changes to the database");
-        stream.println(" updateSQL <num>                Writes SQL to apply next NUM changes");
+		stream.println(" updateCountSQL <num>           Writes SQL to apply next NUM changes");
         stream.println("                                to the database");
         stream.println(" rollback <tag>                 Rolls back the database to the the state is was");
         stream.println("                                when the tag was applied");
@@ -433,7 +470,7 @@ public class Main {
         stream.println("                                to STDOUT");
         stream.println(" rollbackToDate <date/time>     Rolls back the database to the the state is was");
         stream.println("                                at the given date/time.");
-        stream.println("                                Date Format: yyyy-MM-dd HH:mm:ss");
+        stream.println("                                Date Format: yyyy-MM-dd'T'HH:mm:ss");
         stream.println(" rollbackToDateSQL <date/time>  Writes SQL to roll back the database to that");
         stream.println("                                state it was in at the given date/time version");
         stream.println("                                to STDOUT");
@@ -632,7 +669,7 @@ public class Main {
             this.promptForNonLocalDatabase = Boolean.FALSE;
         }
         if (this.logLevel == null) {
-            this.logLevel = "info";
+            this.logLevel = "off";
         }
         if (this.includeSystemClasspath == null) {
             this.includeSystemClasspath = Boolean.TRUE;
@@ -755,7 +792,7 @@ public class Main {
 
     protected void doMigration() throws Exception {
         if ("help".equalsIgnoreCase(command)) {
-            printHelp(System.out);
+            printHelp(System.err);
             return;
         }
 
@@ -772,8 +809,7 @@ public class Main {
         FileSystemResourceAccessor fsOpener = new FileSystemResourceAccessor();
         CommandLineResourceAccessor clOpener = new CommandLineResourceAccessor(classLoader);
         Database database = CommandLineUtils.createDatabaseObject(classLoader, this.url, 
-            this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName,
-            this.outputDefaultCatalog, this.outputDefaultSchema, this.databaseClass, this.driverPropertiesFile,
+            this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), this.databaseClass, this.driverPropertiesFile,
 		    this.liquibaseCatalogName, this.liquibaseSchemaName);
         try {
 
@@ -811,19 +847,20 @@ public class Main {
             }
 
             if ("listLocks".equalsIgnoreCase(command)) {
-                liquibase.reportLocks(System.out);
+                liquibase.reportLocks(System.err);
                 return;
             } else if ("releaseLocks".equalsIgnoreCase(command)) {
-                LockServiceFactory.getInstance().getLockService(database).forceReleaseLock();
-                System.out.println("Successfully released all database change log locks for " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
+                LockService lockService = LockServiceFactory.getInstance().getLockService(database);
+				lockService.forceReleaseLock();
+                System.err.println("Successfully released all database change log locks for " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
                 return;
             } else if ("tag".equalsIgnoreCase(command)) {
                 liquibase.tag(commandParams.iterator().next());
-                System.out.println("Successfully tagged " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
+                System.err.println("Successfully tagged " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
                 return;
             } else if ("dropAll".equals(command)) {
                 liquibase.dropAll();
-                System.out.println("All objects dropped from " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
+                System.err.println("All objects dropped from " + liquibase.getDatabase().getConnection().getConnectionUserName() + "@" + liquibase.getDatabase().getConnection().getURL());
                 return;
             } else if ("status".equalsIgnoreCase(command)) {
                 boolean runVerbose = false;
@@ -845,10 +882,10 @@ public class Main {
                 try {
                     liquibase.validate();
                 } catch (ValidationFailedException e) {
-                    e.printDescriptiveError(System.out);
+                    e.printDescriptiveError(System.err);
                     return;
                 }
-                System.out.println("No validation errors found");
+                System.err.println("No validation errors found");
                 return;
             } else if ("clearCheckSums".equalsIgnoreCase(command)) {
                 liquibase.clearCheckSums();
@@ -869,7 +906,6 @@ public class Main {
                 return;
             }
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
                 if ("update".equalsIgnoreCase(command)) {
                     liquibase.update(contexts);
@@ -896,7 +932,7 @@ public class Main {
                     if (commandParams == null || commandParams.size() == 0) {
                         throw new CommandLineParsingException("rollback requires a rollback date");
                     }
-                    liquibase.rollback(dateFormat.parse(commandParams.iterator().next()), contexts);
+                    liquibase.rollback(new ISODateFormat().parse(commandParams.iterator().next()), contexts);
                 } else if ("rollbackCount".equalsIgnoreCase(command)) {
                     liquibase.rollback(Integer.parseInt(commandParams.iterator().next()), contexts);
 
@@ -909,7 +945,7 @@ public class Main {
                     if (commandParams == null || commandParams.size() == 0) {
                         throw new CommandLineParsingException("rollbackToDateSQL requires a rollback date");
                     }
-                    liquibase.rollback(dateFormat.parse(commandParams.iterator().next()), contexts, getOutputWriter());
+                    liquibase.rollback(new ISODateFormat().parse(commandParams.iterator().next()), contexts, getOutputWriter());
                 } else if ("rollbackCountSQL".equalsIgnoreCase(command)) {
                     if (commandParams == null || commandParams.size() == 0) {
                         throw new CommandLineParsingException("rollbackCountSQL requires a rollback tag");
@@ -965,6 +1001,7 @@ public class Main {
         String username = referenceUsername;
         String password = referencePassword;
         String defaultSchemaName = this.defaultSchemaName;
+		String defaultCatalogName = this.defaultCatalogName;
 
         for (String param : commandParams) {
             String[] splitArg = splitArg(param);
@@ -988,12 +1025,40 @@ public class Main {
             }
         }
 
+//        if (driver == null) {
+//            driver = DatabaseFactory.getWriteExecutor().findDefaultDriver(url);
+//        }
+
         if (url == null) {
             throw new CommandLineParsingException("referenceUrl parameter missing");
         }
 
-        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, outputDefaultCatalog, outputDefaultSchema, null, null, liquibaseCatalogName, liquibaseSchemaName);
-
+        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), null, null, liquibaseCatalogName, liquibaseSchemaName);
+//        Driver driverObject;
+//        try {
+//            driverObject = (Driver) Class.forName(driver, true, classLoader).newInstance();
+//        } catch (Exception e) {
+//            throw new RuntimeException("Cannot find database driver: " + e.getMessage());
+//        }
+//
+//        Properties info = new Properties();
+//        info.put("user", username);
+//        info.put("password", password);
+//
+//        Connection connection;
+//        try {
+//            connection = driverObject.connect(url, info);
+//        } catch (SQLException e) {
+//            throw new DatabaseException("Connection could not be created to " + url + ": " + e.getMessage(), e);
+//        }
+//        if (connection == null) {
+//            throw new DatabaseException("Connection could not be created to " + url + " with driver " + driver.getClass().getName() + ".  Possibly the wrong driver for the given database URL");
+//        }
+//
+//        Database database = DatabaseFactory.getWriteExecutor().findCorrectDatabaseImplementation(connection);
+//        database.setDefaultSchemaName(defaultSchemaName);
+//
+//        return database;
     }
 
     private Writer getOutputWriter() throws UnsupportedEncodingException {

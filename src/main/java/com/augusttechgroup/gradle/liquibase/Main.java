@@ -822,11 +822,11 @@ public class Main {
             DiffOutputControl diffOutputControl = new DiffOutputControl(includeCatalog, includeSchema, includeTablespace);
 
             if ("diff".equalsIgnoreCase(command)) {
-				CommandLineUtils.doDiff(createReferenceDatabaseFromCommandParams(commandParams), database);
+				CommandLineUtils.doDiff(createReferenceDatabaseFromCommandParams(commandParams), database, StringUtils.trimToNull(diffTypes));
 
                 return;
             } else if ("diffChangeLog".equalsIgnoreCase(command)) {
-				                CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams), database, diffOutputControl);
+				CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams), database, diffOutputControl, StringUtils.trimToNull(diffTypes));
                 return;
             } else if ("generateChangeLog".equalsIgnoreCase(command)) {
 	            // By default the generateChangeLog command is descrutive, and Liquibase's attempt to append

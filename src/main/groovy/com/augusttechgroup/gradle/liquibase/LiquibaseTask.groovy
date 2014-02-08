@@ -62,7 +62,7 @@ class LiquibaseTask extends DefaultTask {
 	 * Build the proper command line and call Liquibase.
 	 * @param activity the activity holding the Liquibase particulars.
 	 */
-	private def runLiquibase(activity) {
+	def runLiquibase(activity) {
 		def args = []
 		activity.arguments.each {
 			args += "--${it.key}=${it.value}"

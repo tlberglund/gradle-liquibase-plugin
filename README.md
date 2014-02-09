@@ -11,42 +11,43 @@ Version 1.0.0 is under development, and we hope to have a release by the middle
 of February.  Until then, use caution when building and using a 1.0.0 snapshot
 because there are still a few things that need to be changed, and there could be
 some breaking changes.
-**IMPORTANT NOTE FOR USERS UPGRADING FROM A PRE 1.0.0 RELEASE OF THE GROOVY DSL:**
+**IMPORTANT NOTE FOR USERS UPGRADING FROM A PRE 1.0.0 RELEASE OF THE LIQUIBASE
+  PLUGIN:**
 
 Version 1.0.0 of the Liquibase plugin uses Liquibase 3, instead of Liquibase
 2, and several things have been deprecated from the Groovy DSL to maintain
-compatibility with Liquibase XML. A list of deprecated items can be found in the
-*Usage* sectionof the Groovy DSL project.  To upgrade to version 1.0.0, we
-strongly recommend the following procedure:
+compatibility with Liquibase XML. A list of deprecated items can be found in
+the README for the [Groovy DSL project](https://github.com/tlberglund/groovy-liquibase)
+in the *Usage* section.  To upgrade to version 1.0.0, we strongly recommend the
+following procedure:
 
 1. Make sure all of your Liquibase managed databases are up to date by running
-   ```gradle update``` on them *before upgrading the Liquibase plugin*.
+   ```gradle update``` on them *before upgrading to version 1.0.0 of the
+   Liquibase plugin*.
 
-2. Create a new, throw away database and test your Liquibase change sets by
-   running ```gradle update``` on this new database with the latest version of
+2. Create a new, throw away database to test your Liquibase change sets.  Run
+   ```gradle update``` on the new database using the latest version of
    the Liquibase plugin.  This is important because of the deprecated items in
    the Groovy DSL, and because there are some subtle differences in the ways
    the different Liquibase versions generate SQL.  For example, adding a default
    value to a boolean column in MySql using ```defaultValue: "0"``` worked fine
    in Liquibase 2, but in Liquibase 3, it generates SQL that doesn't work for
-   MySql; ```defaultValueNumeric: 0``` needs to be used instead.  Here is a tip
-   to help find deprecation warnings: redirect stderr to a file.  Most of what
-   Liquibase tells you is on stderr, but not deprecation warnings.
+   MySql - ```defaultValueNumeric: 0``` needs to be used instead.
 
 3. Once you are sure all of your change sets work with the latest Liquibase
-   plugin and Liquibase 3, clear all checksums that were calculated by Liquibase
-   2 by running ```gradle clearChecksums``` against all databases.
+   plugin, clear all checksums that were calculated by Liquibase 2 by running
+   ```gradle clearChecksums``` against all databases.
 
 4. Finally, run ```gradle changeLogSync``` on all databases to calculate new
    checksums.
 
-Version 0.7 and later of the Liquibase plugin changed the way the plugin is
-configured in the build.gradle file, and version 1.0.0 changes it even further.
-Basically, the Liquibase configuration now goes in a ```liquibase``` block,
-instead of separate blocks, and the ```changelogs``` and ```database``` closures
-have been merged into a single ```activities``` closure with methods instead of
-variables.  The ```defaultDatabase``` and ```defaultChangelogs``` variables have been replaced
-with the optional ```runList``` variable.
+Configuring the plugin in version 1.0.0 is different from previous versions.
+The Liquibase configuration now goes in a ```liquibase``` block of the
+build.gradle file instead of separate blocks. The ```changelogs``` and
+```database``` closures have been merged into a single ```activities``` closure
+with methods instead of variables.  The ```defaultDatabase``` and
+```defaultChangelogs``` variables have been replaced with the optional
+```runList``` variable.
 
 For example:
 
@@ -89,19 +90,21 @@ Liquibase documentation to Groovy builder syntax will result in a valid
 changelog. Hence this DSL is not documented separately from the Liquibase XML
 format.  However there are some minor differences or enhancements to the XML
 format, and there are some gaping holes in Liquibase's documentation of the XML.
-Those holes are filled, and differences explained in the documentation for the
+Those holes are filled, and differences explained in the documentation on the
 [Groovy Liquibase DSL](https://github.com/tlberglund/groovy-liquibase) project
 page.
 
-When the Liquibase plugin is applied, it creates a Gradle task for every command
-Liquibase supports.  See the
+The Liquibase plugin is meant to be a light weight font end for the Liquibase
+command line utility.  When the liquibase plugin is applied, it creates a
+Gradle task for each command supported by Liquibase. The
 [Liquibase Documentation](http://www.liquibase.org/documentation/command_line.html)
-For details on what commands are available, and the parameters they can take.
-The specific behavior of a Gradle Liquibase task configured in a ```liquibase```
-block inside the build.gradle file.  This block contains a series of,
-"activities", each defining a series of Liquibase parameters.  It also has a
-"runList", which determines which activities are run for each task.  If no
-runList is defined, the Liquibase Plugin will run all the activities.  NOTE:
+describes what each command does and what parameters each command uses.
+Parameters for the commands are configured in the ```liquibase``` block inside
+the build.gradle file.  This block contains a series of, "activities", each
+defining a series of Liquibase parameters.  Any method in an "activity" is
+assumed to be a Liquibase parameter.  The ```liquibase``` block also has an
+optional "runList", which determines which activities are run for each task.  If
+no runList is defined, the Liquibase Plugin will run all the activities.  NOTE:
 the order of execution when there is no runList is not guaranteed.
 
 *Example:*

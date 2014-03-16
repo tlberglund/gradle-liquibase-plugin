@@ -2,6 +2,8 @@ package net.saliman.gradle.liquibase;
 
 import liquibase.Liquibase;
 import liquibase.change.CheckSum;
+import liquibase.configuration.GlobalConfiguration;
+import liquibase.configuration.LiquibaseConfiguration;
 import liquibase.database.Database;
 import liquibase.diff.output.DiffOutputControl;
 import liquibase.exception.CommandLineParsingException;
@@ -134,11 +136,12 @@ public class Main {
 	 */
     public static void main(String args[]) throws CommandLineParsingException, LiquibaseException, IOException {
         try {
-            String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
-            if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
-                System.err.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
-                return; // Not an error
-            }
+	        GlobalConfiguration globalConfiguration = LiquibaseConfiguration.getInstance().getConfiguration(GlobalConfiguration.class);
+
+	        if (!globalConfiguration.getShouldRun()) {
+		        System.err.println("Liquibase did not run because '" + LiquibaseConfiguration.getInstance().describeValueLookupLogic(globalConfiguration.getProperty(GlobalConfiguration.SHOULD_RUN)) + " was set to false");
+		        return; // not an error
+	        }
 
 //            if (!System.getProperties().contains("file.encoding")) {
 //                System.setProperty("file.encoding", "UTF-8");

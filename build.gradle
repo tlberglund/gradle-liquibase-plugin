@@ -34,8 +34,8 @@ repositories {
 dependencies {
   compile 'org.codehaus.groovy:groovy:1.8.6'
   compile gradleApi()
-  compile 'org.liquibase:liquibase-core:3.1.1'
-  runtime 'net.saliman:groovy-liquibase-dsl:1.0.0'
+  compile 'org.liquibase:liquibase-core:3.3.2'
+  runtime 'net.saliman:groovy-liquibase-dsl:1.0.1-SNAPSHOT'
   archives "org.apache.maven.wagon:wagon-ssh:2.2"
   archives "org.apache.maven.wagon:wagon-ssh-external:2.2"
 }

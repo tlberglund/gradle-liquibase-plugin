@@ -7,10 +7,8 @@ plugin, and an example directory setup as well.
 
 News
 ----
-Version 1.0.0 is under development, and we hope to have a release by the middle
-of February.  Until then, use caution when building and using a 1.0.0 snapshot
-because there are still a few things that need to be changed, and there could be
-some breaking changes.
+Version 1.0.0 is complete, and we will have a release before the end of June.
+We're hoping the final version of Gradle 2.0 will be released by then. 
 **IMPORTANT NOTE FOR USERS UPGRADING FROM A PRE 1.0.0 RELEASE OF THE LIQUIBASE
   PLUGIN:**
 

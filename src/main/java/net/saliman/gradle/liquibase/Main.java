@@ -1,4 +1,4 @@
-package com.augusttechgroup.gradle.liquibase;
+package net.saliman.gradle.liquibase;
 
 import liquibase.Liquibase;
 import liquibase.change.CheckSum;

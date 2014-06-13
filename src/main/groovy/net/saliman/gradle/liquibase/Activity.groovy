@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Tim Berglund
+ * Copyright 2011-2014 Tim Berglund and Steven C. Saliman
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,9 @@
  *
  * Tim Berglund
  * The August Technology Group
- * http://augusttechgroup.com/tim/about
- *
  */
 
-package com.augusttechgroup.gradle.liquibase
+package net.saliman.gradle.liquibase
 
 /**
  * This class represents a single activity that must be performed as part of a

@@ -62,7 +62,13 @@ class LiquibasePlugin
 	    'update': 'Updates the database to the current version.',
 	    'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
 			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.',
+			'unexpectedChangeSets': 'Outputs count (list if --verbose) of changesets run in the database that do not exist in the changelog.',
 			'diff': 'Writes description of differences to standard out.',
+			'diffChangeLog': 'Writes Change Log to update the database to the reference database to standard out',
+			'executeSQL': 'Executes SQL in the database',
+			'snapshot': 'Writes the current state of the database to standard out',
+			'snapshotReference': 'Writes the current state of the referenceUrl database to standard out'
+
     ].each { taskName, taskDescription ->
 	    def commandName = taskName
 	    if ( project.hasProperty('liquibaseTaskPrefix') ) {
@@ -80,13 +86,15 @@ class LiquibasePlugin
 	    'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
 			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',
 			'tag': 'Tags the current database state with <liquibase.commandValue> for future rollback',
-		  'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
+			'futureRollbackCountSQL': 'Writes SQL to roll back <liquibase.commandValue> changes the database after the changes in the changelog have been applied.',
+			'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
 		  'rollbackToDate' : 'Rolls back the database to the state it was in at the <liquibase.commandValue> date/time.',
 		  'rollbackCount' : 'Rolls back the last <liquibase.commandValue> change sets.',
 			'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
 			'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
 			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
-		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
+			'calculateCheckSum': 'Calculates and prints a checksum for the <liquibase.commandValue> changeset with the given id in the format filepath::id::author.',
+			'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
 	  ].each { taskName, taskDescription ->
 		  def commandName = taskName
 		  if ( project.hasProperty('liquibaseTaskPrefix') ) {
@@ -101,4 +109,3 @@ class LiquibasePlugin
 	  }
   }
 }
-

@@ -1,16 +1,27 @@
 Example
 -------
 For an example of how to use this plugin, see the
-[Liquibase Workshop](https://github.com/tlberglund/liquibase-workshop) repo.
+[Liquibase Workshop](https://github.com/stevesaliman/liquibase-workshop) repo.
 That project contains a `build.gradle` showing exactly how to configure the
 plugin, and an example directory setup as well.
 
 News
 ----
-Version 1.0.0 is complete, and we will have a release before the end of June.
-We're hoping the final version of Gradle 2.0 will be released by then. 
-**IMPORTANT NOTE FOR USERS UPGRADING FROM A PRE 1.0.0 RELEASE OF THE LIQUIBASE
-  PLUGIN:**
+###June 15, 2014
+We are proud to announce the long awaited release of version 1.0.0 of the 
+Gradle Liquibase Plugin. Version 1.0.0 uses version the latest release of 
+Liquibase (3.1.1), and it appears to work fine with both Gradle 1.x releases as
+well as the upcoming Gradle 2.0 release.
+
+Tim Berglund has asked me to take on the continued maintenance of this plugin,
+so I've had to change the maven group ID to one for which I have permission to 
+publish on Maven Central.  Going forward, this plugin will be available under 
+the ```net.saliman``` group id.  The artifact ID will remain the same: 
+```gradle-liquibase-plugin```.  
+
+My thanks to Tim for the opportunity to help out with this great plugin.
+ 
+Steve Saliman
 
 Version 1.0.0 of the Liquibase plugin uses Liquibase 3, instead of Liquibase
 2, and several things have been deprecated from the Groovy DSL to maintain

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Tim Berglund
- * The August Technology Group
  */
 
 package net.saliman.gradle.liquibase

@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Tim Berglund
- * http://timberglund.com
- *
  */
 
 package net.saliman.gradle.liquibase

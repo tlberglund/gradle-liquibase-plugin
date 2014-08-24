@@ -170,6 +170,6 @@ Some things to keep in mind when setting up the ```liquibase``` block:
 5. Some Liquibase commands like ```tag``` and ```rollback``` require a value,
    in this case a tag name.  Since the value will likely change from run to run,
    the command value is not configured in the ```liquibase``` block.  To supply
-   a command value, add ```-PlilquibaseCommandValue=<value>``` to the gradle
+   a command value, add ```-PliquibaseCommandValue=<value>``` to the gradle
    command.
 

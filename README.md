@@ -118,7 +118,8 @@ describes what each command does and what parameters each command uses.  If you
 want to prefix each task to avoid task name conflicts, set a value for the 
 ```liquibaseTaskPrefix``` property.  This will tell the liquibase plugin to 
 capitalize the task name and prefix it with the given prefix.  For example,
-if Gradle is invoked with ```-PliquibaseTaskPrefix=liquibase```, then this 
+if Gradle is invoked with ```-PliquibaseTaskPrefix=liquibase```, or you put
+```liquibaseTaskPrefix=liquibase``` in ```gradle.properties``` then this 
 plugin will create tasks named ```liquibaseUpdate```, ```liquibaseTag```, etc.
 
 Parameters for the commands are configured in the ```liquibase``` block inside

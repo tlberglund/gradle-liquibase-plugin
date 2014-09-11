@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
-version = '1.0.0'
+version = '1.0.1-SNAPSHOT'
 group = 'net.saliman'
 def artifact = 'gradle-liquibase-plugin'
 

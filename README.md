@@ -7,6 +7,13 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###September 10, 2014
+This plugin is designed to be a wrapper for the Liquibase project, so it 
+creates tasks to match the various Liquibase commands.  This can cause conflicts
+with tasks that other plugins create, so we've added the ability to add a 
+prefix to all the tasks this plugin creates.  See the Usage section for more
+details.
+
 ###June 15, 2014
 We are proud to announce the long awaited release of version 1.0.0 of the 
 Gradle Liquibase Plugin. Version 1.0.0 uses version the latest release of 
@@ -107,7 +114,13 @@ The Liquibase plugin is meant to be a light weight font end for the Liquibase
 command line utility.  When the liquibase plugin is applied, it creates a
 Gradle task for each command supported by Liquibase. The
 [Liquibase Documentation](http://www.liquibase.org/documentation/command_line.html)
-describes what each command does and what parameters each command uses.
+describes what each command does and what parameters each command uses.  If you
+want to prefix each task to avoid task name conflicts, set a value for the 
+```liquibaseTaskPrefix``` property.  This will tell the liquibase plugin to 
+capitalize the task name and prefix it with the given prefix.  For example,
+if Gradle is invoked with ```-PliquibaseTaskPrefix=liquibase```, then this 
+plugin will create tasks named ```liquibaseUpdate```, ```liquibaseTag```, etc.
+
 Parameters for the commands are configured in the ```liquibase``` block inside
 the build.gradle file.  This block contains a series of, "activities", each
 defining a series of Liquibase parameters.  Any method in an "activity" is

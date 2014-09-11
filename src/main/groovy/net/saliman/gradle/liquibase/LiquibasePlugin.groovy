@@ -39,6 +39,11 @@ class LiquibasePlugin
     }
   }
 
+	/**
+	 * Create all of the liquibase tasks and add them to the project.  If the
+	 * liquibaseTaskPrefix is set, add that prefix to the task names.
+	 * @param project the project to enhance
+	 */
   void applyTasks(Project project) {
 	  // Create tasks that don't take a value.
     [
@@ -59,10 +64,14 @@ class LiquibasePlugin
 			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.',
 			'diff': 'Writes description of differences to standard out.',
     ].each { taskName, taskDescription ->
+	    def commandName = taskName
+	    if ( project.hasProperty('liquibaseTaskPrefix') ) {
+		    taskName = project.liquibaseTaskPrefix + taskName.capitalize()
+	    }
       project.task(taskName, type: LiquibaseTask) {
         group = 'Liquibase'
 	      description = taskDescription
-	      command = taskName
+	      command = commandName
       }
     }
 
@@ -79,10 +88,14 @@ class LiquibasePlugin
 			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
 		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
 	  ].each { taskName, taskDescription ->
+		  def commandName = taskName
+		  if ( project.hasProperty('liquibaseTaskPrefix') ) {
+			  taskName = project.liquibaseTaskPrefix + taskName.capitalize()
+		  }
       project.task(taskName, type: LiquibaseTask) {
         group = 'Liquibase'
 	      description = taskDescription
-	      command = taskName
+	      command = commandName
 	      requiresValue = true
       }
 	  }

@@ -65,7 +65,6 @@ class LiquibasePlugin
 			'unexpectedChangeSets': 'Outputs count (list if --verbose) of changesets run in the database that do not exist in the changelog.',
 			'diff': 'Writes description of differences to standard out.',
 			'diffChangeLog': 'Writes Change Log to update the database to the reference database to standard out',
-			'executeSQL': 'Executes SQL in the database',
 			'snapshot': 'Writes the current state of the database to standard out',
 			'snapshotReference': 'Writes the current state of the referenceUrl database to standard out'
 
@@ -94,6 +93,7 @@ class LiquibasePlugin
 			'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
 			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
 			'calculateCheckSum': 'Calculates and prints a checksum for the <liquibase.commandValue> changeset with the given id in the format filepath::id::author.',
+			'executeSQL': 'Executes SQL in the database',
 			'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
 	  ].each { taskName, taskDescription ->
 		  def commandName = taskName

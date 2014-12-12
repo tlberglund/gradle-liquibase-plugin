@@ -134,11 +134,6 @@ public class Main {
 	 */
     public static void main(String args[]) throws CommandLineParsingException, LiquibaseException, IOException {
         try {
-            String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
-            if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
-                System.err.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
-                return; // Not an error
-            }
 
 //            if (!System.getProperties().contains("file.encoding")) {
 //                System.setProperty("file.encoding", "UTF-8");
@@ -810,7 +805,7 @@ public class Main {
         CommandLineResourceAccessor clOpener = new CommandLineResourceAccessor(classLoader);
         Database database = CommandLineUtils.createDatabaseObject(classLoader, this.url, 
             this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), this.databaseClass, this.driverPropertiesFile,
-		    this.liquibaseCatalogName, this.liquibaseSchemaName);
+		    null, this.liquibaseCatalogName, this.liquibaseSchemaName);
         try {
 
 
@@ -1033,7 +1028,7 @@ public class Main {
             throw new CommandLineParsingException("referenceUrl parameter missing");
         }
 
-        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), null, null, liquibaseCatalogName, liquibaseSchemaName);
+        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), null, null, null, liquibaseCatalogName, liquibaseSchemaName);
 //        Driver driverObject;
 //        try {
 //            driverObject = (Driver) Class.forName(driver, true, classLoader).newInstance();

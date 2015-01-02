@@ -6,6 +6,9 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
 group = 'net.saliman'
 archivesBaseName = 'gradle-liquibase-plugin'
 version = '1.0.1-SNAPSHOT'
@@ -96,7 +99,7 @@ uploadArchives {
   // configuration.  The startParameter is not as good, but it probably
   // good enough for our purposes.
   if ( gradle.startParameter.taskNames.contains("uploadArchives") ) {
-    // Use Java 6's console to read from the console (no good for a CI
+    // Use Java's console to read from the console (no good for a CI
     // environment)
     Console console = System.console()
     console.printf "\n\nWe have to upload some things in this build...\n\n"

@@ -1,17 +1,13 @@
-#!groovy
-// The above triggers groovy syntax highlighting in vim
-
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'idea'
 
 group = 'net.saliman'
 archivesBaseName = 'gradle-liquibase-plugin'
-version = '1.0.1-SNAPSHOT'
+version = '3.3.x-SNAPSHOT'
 ext.isSnapshot = version.endsWith('SNAPSHOT')
 
-if ( isSnapshot ) {
+if (isSnapshot) {
   println "using snapshot"
   ext.mavenCentralUploadUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 } else {
@@ -29,11 +25,13 @@ repositories {
 }
 
 dependencies {
+  compile gradleApi()
+
+  compile 'net.saliman:groovy-liquibase-dsl:3.3.x-SNAPSHOT'
   compile 'org.codehaus.groovy:groovy:2.4.1'
   compile 'org.codehaus.groovy:groovy-sql:2.4.1'
-  compile gradleApi()
   compile 'org.liquibase:liquibase-core:3.1.1'
-  runtime 'net.saliman:groovy-liquibase-dsl:1.0.1-SNAPSHOT'
+
   archives "org.apache.maven.wagon:wagon-ssh:2.8"
   archives "org.apache.maven.wagon:wagon-ssh-external:2.8"
 }
@@ -66,29 +64,29 @@ import org.gradle.plugins.signing.Sign
 gradle.taskGraph.whenReady { taskGraph ->
   tasks.withType(org.gradle.plugins.signing.Sign).all {
     required = taskGraph.hasTask(":uploadArchives") && !isSnapshot
-	  if ( required ) {
-	    // Use Java's console to read from the console (no good for a CI
-	    // environment)
-	    Console console = System.console()
-	    console.printf "\n\nWe have to sign some things in this build...\n\n"
+      if (required) {
+        // Use Java's console to read from the console (no good for a CI
+        // environment)
+        Console console = System.console()
+        console.printf "\n\nWe have to sign some things in this build...\n\n"
 
-      if ( !project.hasProperty('signing.keyId') ) {
+      if (!project.hasProperty('signing.keyId')) {
         def id = console.readLine("PGP Public Key Id: ")
         allprojects { ext."signing.keyId" = id }
       }
 
-	    if ( !project.hasProperty('signing.secretKeyRingFile') ) {
-	      def file = console.readLine("PGP Secret Key Ring File (absolute path): ")
-	      allprojects { ext."signing.secretKeyRingFile" = file }
-	    }
+      if (!project.hasProperty('signing.secretKeyRingFile')) {
+        def file = console.readLine("PGP Secret Key Ring File (absolute path): ")
+        allprojects { ext."signing.secretKeyRingFile" = file }
+      }
 
-		  if ( !project.hasProperty('signing.password') ) {
-			  def password = console.readPassword("PGP Private Key Password: ")
-			  allprojects { ext."signing.password" = password }
-	    }
+      if (!project.hasProperty('signing.password')) {
+        def password = console.readPassword("PGP Private Key Password: ")
+        allprojects { ext."signing.password" = password }
+      }
 
-		  console.printf "\nThanks.\n\n"
-	  }
+      console.printf "\nThanks.\n\n"
+    }
   }
 }
 
@@ -96,25 +94,25 @@ uploadArchives {
   // We can't use taskGraph.whenReady because it doesn't resolve until after
   // configuration.  The startParameter is not as good, but it probably
   // good enough for our purposes.
-  if ( gradle.startParameter.taskNames.contains("uploadArchives") ) {
+  if (gradle.startParameter.taskNames.contains("uploadArchives")) {
     // Use Java's console to read from the console (no good for a CI
     // environment)
     Console console = System.console()
     console.printf "\n\nWe have to upload some things in this build...\n\n"
 
-    if ( !project.hasProperty('mavenCentralUsername') ) {
+    if (!project.hasProperty('mavenCentralUsername')) {
       def mavenCentralUsername = console.readLine("Maven Central Username: ")
       allprojects { ext."mavenCentralUsername" = mavenCentralUsername }
     }
 
-    if ( !project.hasProperty('mavenCentralPassword') ) {
+    if (!project.hasProperty('mavenCentralPassword')) {
       def mavenCentralPassword = console.readLine("Maven Central Password: ")
       allprojects { ext."mavenCentralPassword" = mavenCentralPassword }
     }
 
     repositories {
       mavenDeployer {
-        if ( signing.signatory ) {
+        if (signing.signatory) {
           beforeDeployment { signing.signPom(it) }
         }
         configuration = configurations.archives
@@ -133,10 +131,10 @@ uploadArchives {
 
 def getPomConfiguration() {
   return {
-    name('Gradle Liquibase Plugin')
+    name 'Gradle Liquibase Plugin'
     packaging 'jar'
-    description('A Gradle plugin for the Liquibase database refactoring tool.')
-    url('https://github.com/tlberglund/gradle-liquibase-plugin')
+    description 'A Gradle plugin for the Liquibase database refactoring tool.'
+    url 'https://github.com/tlberglund/gradle-liquibase-plugin'
     licenses {
       license {
         name 'The Apache Software License, Version 2.0'
@@ -146,21 +144,26 @@ def getPomConfiguration() {
     }
     developers {
       developer {
-        id('tlberglund')
-        name('Tim Berglund')
-        email('tlberglund@gmail.com')
+        id 'tlberglund'
+        name 'Tim Berglund'
+        email 'tlberglund@gmail.com'
       }
-	    developer {
-		    id 'stevesaliman'
-		    name 'Steven C. Saliman'
-		    email 'support@saliman.net'
-	    }
+      developer {
+        id 'stevesaliman'
+        name 'Steven C. Saliman'
+        email 'support@saliman.net'
+      }
     }
     scm {
-      connection('scm:https://tlberglund@github.com/tlberglund/gradle-liquibase-plugin')
-      developerConnection('scm:git@github.com:tlberglund/gradle-liquibase-plugin.git')
-      url('https://github.com/tlberglund/gradle-liquibase-plugin')
+      connection 'scm:https://tlberglund@github.com/tlberglund/gradle-liquibase-plugin'
+      developerConnection 'scm:git@github.com:tlberglund/gradle-liquibase-plugin.git'
+      url 'https://github.com/tlberglund/gradle-liquibase-plugin'
     }
   }
 }
 
+// configure java compiliation parameters
+compileJava {
+  // latest liquibase is overriding some APIs
+  options.compilerArgs << '-Xlint:deprecation'
+}

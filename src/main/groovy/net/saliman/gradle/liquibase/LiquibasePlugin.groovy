@@ -62,7 +62,8 @@ class LiquibasePlugin
 	    'update': 'Updates the database to the current version.',
 	    'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
 			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.',
-			'diff': 'Writes description of differences to standard out.',
+			'diff': 'Writes description of database differences to standard out.',
+			'diffChangeLog': 'Writes description of database differences to changelog.',
     ].each { taskName, taskDescription ->
 	    def commandName = taskName
 	    if ( project.hasProperty('liquibaseTaskPrefix') ) {

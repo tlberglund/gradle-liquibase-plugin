@@ -20,6 +20,8 @@ package net.saliman.gradle.liquibase
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import liquibase.integration.commandline.Main
+
 /**
  * Gradle task that calls Liquibase to run a command.
  */
@@ -89,7 +91,7 @@ class LiquibaseTask extends DefaultTask {
 		}
 
 		println "liquibase-plugin: Running the '${activity.name}' activity..."
-		Main.main(args as String[])
+		Main.run(args as String[])
 
 	}
 }

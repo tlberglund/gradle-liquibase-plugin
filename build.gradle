@@ -5,13 +5,14 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
+apply plugin: 'eclipse'
 
-sourceCompatibility = 1.5
-targetCompatibility = 1.5
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 group = 'net.saliman'
 archivesBaseName = 'gradle-liquibase-plugin'
-version = '1.0.1-SNAPSHOT'
+version = '1.1.0-SNAPSHOT'
 ext.isSnapshot = version.endsWith('SNAPSHOT')
 
 if ( isSnapshot ) {
@@ -20,6 +21,11 @@ if ( isSnapshot ) {
 } else {
   println "using staging"
   ext.mavenCentralUploadUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+
+task wrapper(type: Wrapper) {
+	description = "Generates gradlew[.bat] scripts"
+	gradleVersion = "2.3"
 }
 
 configurations { 
@@ -32,9 +38,9 @@ repositories {
 }
 
 dependencies {
-  compile 'org.codehaus.groovy:groovy:1.8.6'
+  compile 'org.codehaus.groovy:groovy:2.4.1'
   compile gradleApi()
-  compile 'org.liquibase:liquibase-core:3.1.1'
+  compile 'org.liquibase:liquibase-core:3.3.2'
   runtime 'net.saliman:groovy-liquibase-dsl:1.0.0'
   archives "org.apache.maven.wagon:wagon-ssh:2.2"
   archives "org.apache.maven.wagon:wagon-ssh-external:2.2"

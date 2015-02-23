@@ -2,6 +2,7 @@ package net.saliman.gradle.liquibase;
 
 import liquibase.Liquibase;
 import liquibase.change.CheckSum;
+import liquibase.configuration.GlobalConfiguration;
 import liquibase.database.Database;
 import liquibase.diff.output.DiffOutputControl;
 import liquibase.exception.CommandLineParsingException;
@@ -134,9 +135,9 @@ public class Main {
 	 */
     public static void main(String args[]) throws CommandLineParsingException, LiquibaseException, IOException {
         try {
-            String shouldRunProperty = System.getProperty(Liquibase.SHOULD_RUN_SYSTEM_PROPERTY);
+            String shouldRunProperty = System.getProperty(GlobalConfiguration.SHOULD_RUN);
             if (shouldRunProperty != null && !Boolean.valueOf(shouldRunProperty)) {
-                System.err.println("Liquibase did not run because '" + Liquibase.SHOULD_RUN_SYSTEM_PROPERTY + "' system property was set to false");
+                System.err.println("Liquibase did not run because '" + GlobalConfiguration.SHOULD_RUN + "' system property was set to false");
                 return; // Not an error
             }
 
@@ -809,7 +810,7 @@ public class Main {
         FileSystemResourceAccessor fsOpener = new FileSystemResourceAccessor();
         CommandLineResourceAccessor clOpener = new CommandLineResourceAccessor(classLoader);
         Database database = CommandLineUtils.createDatabaseObject(classLoader, this.url, 
-            this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), this.databaseClass, this.driverPropertiesFile,
+            this.username, this.password, this.driver, this.defaultCatalogName, this.defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), this.databaseClass, this.driverPropertiesFile, null,
 		    this.liquibaseCatalogName, this.liquibaseSchemaName);
         try {
 
@@ -1033,7 +1034,7 @@ public class Main {
             throw new CommandLineParsingException("referenceUrl parameter missing");
         }
 
-        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), null, null, liquibaseCatalogName, liquibaseSchemaName);
+        return CommandLineUtils.createDatabaseObject(classLoader, url, username, password, driver, defaultCatalogName, defaultSchemaName, Boolean.parseBoolean(outputDefaultCatalog), Boolean.parseBoolean(outputDefaultSchema), null, null, null, liquibaseCatalogName, liquibaseSchemaName);
 //        Driver driverObject;
 //        try {
 //            driverObject = (Driver) Class.forName(driver, true, classLoader).newInstance();

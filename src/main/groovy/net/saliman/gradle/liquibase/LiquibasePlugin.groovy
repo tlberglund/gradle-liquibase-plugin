@@ -44,29 +44,34 @@ class LiquibasePlugin
 	 * liquibaseTaskPrefix is set, add that prefix to the task names.
 	 * @param project the project to enhance
 	 */
-  void applyTasks(Project project) {
+
+
+
+
+
+	void applyTasks(Project project) {
 	  // Create tasks that don't take a value.
     [
-      'status': 'Outputs count (list if --verbose) of unrun change sets.',
-			'validate': 'Checks the changelog for errors.',
-			'changelogSync': 'Mark all changes as executed in the database.',
-			'changelogSyncSQL': 'Writes SQL to mark all changes as executed in the database to STDOUT.',
-      'listLocks': 'Lists who currently has locks on the database changelog.',
-			'releaseLocks': 'Releases all locks on the database changelog.',
-			'markNextChangesetRan': 'Mark the next change set as executed in the database.',
-      'markNextChangesetRanSQL': 'Writes SQL to mark the next change set as executed in the database to STDOUT.',
-			'dropAll': 'Drops all database objects owned by the user. Note that functions, procedures and packages are not dropped (limitation in 1.8.1).',
-			'clearChecksums': 'Removes current checksums from database. On next run checksums will be recomputed.',
-      'generateChangelog': 'generateChangeLog of the database to standard out. v1.8 requires the dataDir parameter currently.',
-      'futureRollbackSQL': 'Writes SQL to roll back the database to the current state after the changes in the changeslog have been applied.',
-	    'update': 'Updates the database to the current version.',
-	    'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
+			'update': 'Updates the database to the current version.',
+			'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
+			'futureRollbackSQL': 'Writes SQL to roll back the database to the current state after the changes in the changeslog have been applied.',
 			'updateTestingRollback': 'Updates the database, then rolls back changes before updating again.',
-			'unexpectedChangeSets': 'Outputs count (list if --verbose) of changesets run in the database that do not exist in the changelog.',
+		  'listLocks': 'Lists who currently has locks on the database changelog.',
+		  'dropAll': 'Drops all database objects owned by the user. Note that functions, procedures and packages are not dropped (Liquibase limitation)',
+		  'releaseLocks': 'Releases all locks on the database changelog.',
+		  'validate': 'Checks the changelog for errors.',
 			'diff': 'Writes description of differences to standard out.',
 			'diffChangeLog': 'Writes Change Log to update the database to the reference database to standard out',
 			'snapshot': 'Writes the current state of the database to standard out',
-			'snapshotReference': 'Writes the current state of the referenceUrl database to standard out'
+			'snapshotReference': 'Writes the current state of the referenceUrl database to standard out',
+			'clearChecksums': 'Removes all saved checksums from the database. On next run checksums will be recomputed.  Useful for "MD5Sum Check Failed" errors.',
+			'changelogSync': 'Mark all changes as executed in the database.',
+			'changelogSyncSQL': 'Writes SQL to mark all changes as executed in the database to STDOUT.',
+			'markNextChangesetRan': 'Mark the next change set as executed in the database.',
+			'markNextChangesetRanSQL': 'Writes SQL to mark the next change set as executed in the database to STDOUT.',
+      'status': 'Outputs count (list of --verbose) of unrun change sets.',
+			'generateChangelog': 'Writes Change Log groovy to copy the current state of the database to standard out.',
+			'unexpectedChangeSets': 'Outputs count (list if --verbose) of changesets run in the database that do not exist in the changelog.'
 
     ].each { taskName, taskDescription ->
 	    def commandName = taskName
@@ -82,19 +87,19 @@ class LiquibasePlugin
 
 	  // Create tasks that do take a value.
 	  [
-	    'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
+		  'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
 			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',
-			'tag': 'Tags the current database state with <liquibase.commandValue> for future rollback',
-			'futureRollbackCountSQL': 'Writes SQL to roll back <liquibase.commandValue> changes the database after the changes in the changelog have been applied.',
-			'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
+		  'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
 		  'rollbackToDate' : 'Rolls back the database to the state it was in at the <liquibase.commandValue> date/time.',
 		  'rollbackCount' : 'Rolls back the last <liquibase.commandValue> change sets.',
-			'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
-			'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
-			'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
+		  'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
+		  'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
+		  'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
+		  'futureRollbackCountSQL': 'Writes SQL to roll back <liquibase.commandValue> changes the database after the changes in the changelog have been applied.',
+		  'tag': 'Tags the current database state with <liquibase.commandValue> for future rollback',
+		  'executeSql': 'Executes SQL in the database',
 			'calculateCheckSum': 'Calculates and prints a checksum for the <liquibase.commandValue> changeset with the given id in the format filepath::id::author.',
-			'executeSQL': 'Executes SQL in the database',
-			'dbDoc': 'Generates Javadoc-like documentation based on current database and change log.'
+		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log to the <liquibase.commandValue> directory.'
 	  ].each { taskName, taskDescription ->
 		  def commandName = taskName
 		  if ( project.hasProperty('liquibaseTaskPrefix') ) {

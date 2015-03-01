@@ -50,7 +50,7 @@ class LiquibasePlugin
 
 
 	void applyTasks(Project project) {
-	  // Create tasks that don't take a value.
+	  // Create tasks that don't require a value.
     [
 			'update': 'Updates the database to the current version.',
 			'updateSQL': 'Writes SQL to update the database to the current version to STDOUT.',
@@ -69,9 +69,9 @@ class LiquibasePlugin
 			'changelogSyncSQL': 'Writes SQL to mark all changes as executed in the database to STDOUT.',
 			'markNextChangesetRan': 'Mark the next change set as executed in the database.',
 			'markNextChangesetRanSQL': 'Writes SQL to mark the next change set as executed in the database to STDOUT.',
-      'status': 'Outputs count (list of --verbose) of unrun change sets.',
+      'status': 'Outputs count (list if liquibaseCommandValue is "--verbose") of unrun change sets.',
 			'generateChangelog': 'Writes Change Log groovy to copy the current state of the database to standard out.',
-			'unexpectedChangeSets': 'Outputs count (list if --verbose) of changesets run in the database that do not exist in the changelog.'
+			'unexpectedChangeSets': 'Outputs count (list if liquibaseCommandValue is "--verbose") of changesets run in the database that do not exist in the changelog.'
 
     ].each { taskName, taskDescription ->
 	    def commandName = taskName
@@ -85,7 +85,7 @@ class LiquibasePlugin
       }
     }
 
-	  // Create tasks that do take a value.
+	  // Create tasks that do require a value.
 	  [
 		  'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
 			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',

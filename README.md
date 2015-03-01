@@ -7,6 +7,9 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###March 1, 2015
+The plugin has been updated to support Liquibase 3.3.2.
+
 ###September 10, 2014
 This plugin is designed to be a wrapper for the Liquibase project, so it 
 creates tasks to match the various Liquibase commands.  This can cause conflicts
@@ -100,15 +103,19 @@ liquibase {
 ```
 
 ## Usage
-The Liquibase plugin uses the Groovy DSL syntax intended to mirror the Liquibase
-XML syntax directly, such that mapping elements and attributes from the
-Liquibase documentation to Groovy builder syntax will result in a valid
-changelog. Hence this DSL is not documented separately from the Liquibase XML
-format.  However there are some minor differences or enhancements to the XML
-format, and there are some gaping holes in Liquibase's documentation of the XML.
-Those holes are filled, and differences explained in the documentation on the
+The Liquibase plugin allows you to use Liquibase to manage database updates.
+It also adds support for the the Groovy DSL, which is a much nicer way to write
+a changelog.  The Groovy DSL syntax intended to mirror the Liquibase XML syntax
+directly, such that mapping elements and attributes from the Liquibase
+documentation to Groovy builder syntax will result in a valid changelog. Hence
+this DSL is not documented separately from the Liquibase XML format.  However
+there are some minor differences or enhancements to the XML format, and there
+are some gaping holes in Liquibase's documentation of the XML. Those holes are
+filled, and differences explained in the documentation on the
 [Groovy Liquibase DSL](https://github.com/tlberglund/groovy-liquibase) project
-page.
+page.  To use the Groovy DSL, simply specify a ```changeLogFile``` that ends in
+.groovy.  For those who prefer XML, JSON, or Yaml, you can use these formats by
+specifying a ```changeLogFile``` that ends in the appropriate extension.
 
 The Liquibase plugin is meant to be a light weight font end for the Liquibase
 command line utility.  When the liquibase plugin is applied, it creates a

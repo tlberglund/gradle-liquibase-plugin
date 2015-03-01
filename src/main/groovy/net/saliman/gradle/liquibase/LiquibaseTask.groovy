@@ -17,6 +17,7 @@
 
 package net.saliman.gradle.liquibase
 
+import liquibase.integration.commandline.Main
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -68,21 +69,22 @@ class LiquibaseTask extends DefaultTask {
 			args += command
 		}
 
+		def value = project.properties.get("liquibaseCommandValue")
 
-		if ( requiresValue ) {
-			def value = project.properties.get("liquibaseCommandValue")
+		// Special case for the dbDoc command.  This is the only command that
+		// has a default value in the plugin.
+		if ( !value && command == "dbDoc" ) {
+			value = project.file("${project.buildDir}/database/docs")
+		}
 
-			// Special case for the dbDoc command.  This is the only command that
-			// has a default value in the plugin.
-			if ( !value && command == "dbDoc" ) {
-				value = project.file("${project.buildDir}/database/docs")
-			}
+		if ( !value && requiresValue ) {
+			throw new RuntimeException("The Liquibase '${command}' command requires a value")
+		}
 
-			if ( !value ) {
-				throw new RuntimeException("The Liquibase '${command}' command requires a value")
-			}
+		if ( value ) {
 			args += value
 		}
+
 
 		activity.parameters.each {
 			args += "-D${it.key}=${it.value}"
@@ -90,7 +92,7 @@ class LiquibaseTask extends DefaultTask {
 
 		println "liquibase-plugin: Running the '${activity.name}' activity..."
 		project.logger.debug("liquibase-plugin: Running 'iquibase ${args.join(" ")}'")
-		liquibase.integration.commandline.Main.run(args as String[])
+		Main.run(args as String[])
 
 	}
 }

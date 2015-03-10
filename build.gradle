@@ -11,7 +11,7 @@ targetCompatibility = 1.5
 
 group = 'net.saliman'
 archivesBaseName = 'gradle-liquibase-plugin'
-version = '1.0.2-SNAPSHOT'
+version = '1.0.2'
 ext.isSnapshot = version.endsWith('SNAPSHOT')
 
 if ( isSnapshot ) {
@@ -35,7 +35,7 @@ dependencies {
   compile 'org.codehaus.groovy:groovy:2.4.1'
   compile gradleApi()
   compile 'org.liquibase:liquibase-core:3.3.2'
-  runtime 'net.saliman:groovy-liquibase-dsl:1.0.2-SNAPSHOT'
+  runtime 'net.saliman:groovy-liquibase-dsl:1.0.2'
   archives 'org.apache.maven.wagon:wagon-ssh:2.8'
   archives 'org.apache.maven.wagon:wagon-ssh-external:2.8'
 }

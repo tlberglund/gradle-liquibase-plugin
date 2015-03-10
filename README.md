@@ -7,10 +7,11 @@ plugin, and an example directory setup as well.
 
 News
 ----
-###March 1, 2015
-The plugin has been updated to support Liquibase 3.3.2. As part of this release,
-I've bumped the version of Groovy that the plugin uses.  This can cause issues
-in Gradle 1.x.  The workaround is to add
+###March 9, 2015
+The plugin has been updated to support Liquibase 3.3.2. Version 1.0.2 fixes a
+bug that prevented Groovy changelogs from working in Java versions before JDK 8.
+As part of this release, I've bumped the version of Groovy that the plugin uses.
+This can cause issues in Gradle 1.x.  The workaround is to add
 ```classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.5'``` to the
 buildscript dependencies.
 

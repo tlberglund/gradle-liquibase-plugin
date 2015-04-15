@@ -91,7 +91,7 @@ class LiquibaseTask extends DefaultTask {
 		}
 
 		println "liquibase-plugin: Running the '${activity.name}' activity..."
-		project.logger.debug("liquibase-plugin: Running 'iquibase ${args.join(" ")}'")
+		project.logger.debug("liquibase-plugin: Running 'liquibase ${args.join(" ")}'")
 		Main.run(args as String[])
 
 	}

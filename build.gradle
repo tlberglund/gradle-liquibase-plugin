@@ -74,7 +74,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 	    Console console = System.console()
 	    console.printf '\n\nWe have to sign some things in this build...\n\n'
 
-      if ( !project.hasProp.getConfiguration(GlobalConfiguration.class)erty('signing.keyId') ) {
+      if ( !project.hasProperty('signing.keyId') ) {
         def id = console.readLine('PGP Public Key Id: ')
         allprojects { ext.'signing.keyId' = id }
       }
@@ -138,7 +138,7 @@ def getPomConfiguration() {
     name('Gradle Liquibase Plugin')
     packaging 'jar'
     description('A Gradle plugin for the Liquibase database refactoring tool.')
-    url('https://github.com/tlberglund/gradle-liquibase-plugin')
+    url('https://github.com/liquibase/gradle-liquibase-plugin')
     licenses {
       license {
         name 'The Apache Software License, Version 2.0'
@@ -159,9 +159,9 @@ def getPomConfiguration() {
 	    }
     }
     scm {
-      connection('scm:https://tlberglund@github.com/tlberglund/gradle-liquibase-plugin')
-      developerConnection('scm:git@github.com:tlberglund/gradle-liquibase-plugin.git')
-      url('https://github.com/tlberglund/gradle-liquibase-plugin')
+      connection('scm:https://liquibase@github.com/liquibase/gradle-liquibase-plugin')
+      developerConnection('scm:git@github.com:liquibase/gradle-liquibase-plugin.git')
+      url('https://github.com/liquibase/gradle-liquibase-plugin')
     }
   }
 }

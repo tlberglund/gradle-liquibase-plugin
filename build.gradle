@@ -74,7 +74,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 	    Console console = System.console()
 	    console.printf '\n\nWe have to sign some things in this build...\n\n'
 
-      if ( !project.hasProp.getConfiguration(GlobalConfiguration.class)erty('signing.keyId') ) {
+      if ( !project.hasProperty('signing.keyId') ) {
         def id = console.readLine('PGP Public Key Id: ')
         allprojects { ext.'signing.keyId' = id }
       }

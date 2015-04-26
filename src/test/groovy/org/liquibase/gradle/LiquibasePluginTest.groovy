@@ -1,4 +1,4 @@
-package net.saliman.gradle.liquibase
+package org.liquibase.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -16,7 +16,7 @@ class LiquibasePluginTest extends GroovyTestCase {
 	 * for one task that takes an argument, and one that doesn't
 	 */
 	public void testApplyPluginByType() {
-		project.apply plugin: net.saliman.gradle.liquibase.LiquibasePlugin
+		project.apply plugin: org.liquibase.gradle.LiquibasePlugin
     assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))
 		// the tag task takes an arg...
 		def task = project.tasks.findByName('tag')

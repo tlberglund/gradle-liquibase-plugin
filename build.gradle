@@ -9,9 +9,9 @@ apply plugin: 'idea'
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
-group = 'net.saliman'
-archivesBaseName = 'gradle-liquibase-plugin'
-version = '1.0.2'
+group = 'org.liquibase'
+archivesBaseName = 'liquibase-gradle-plugin'
+version = '1.1.0-SNAPSHOT'
 ext.isSnapshot = version.endsWith('SNAPSHOT')
 
 if ( isSnapshot ) {
@@ -35,7 +35,7 @@ dependencies {
   compile 'org.codehaus.groovy:groovy:2.4.1'
   compile gradleApi()
   compile 'org.liquibase:liquibase-core:3.3.2'
-  runtime 'net.saliman:groovy-liquibase-dsl:1.0.2'
+  runtime 'org.liquibase:liquibase-groovy-dsl:1.1.0-SNAPSHOT'
   archives 'org.apache.maven.wagon:wagon-ssh:2.8'
   archives 'org.apache.maven.wagon:wagon-ssh-external:2.8'
 }
@@ -138,7 +138,7 @@ def getPomConfiguration() {
     name('Gradle Liquibase Plugin')
     packaging 'jar'
     description('A Gradle plugin for the Liquibase database refactoring tool.')
-    url('https://github.com/liquibase/gradle-liquibase-plugin')
+    url('https://github.com/liquibase/liquibase-gradle-plugin')
     licenses {
       license {
         name 'The Apache Software License, Version 2.0'
@@ -147,11 +147,6 @@ def getPomConfiguration() {
       }
     }
     developers {
-      developer {
-        id('tlberglund')
-        name('Tim Berglund')
-        email('tlberglund@gmail.com')
-      }
 	    developer {
 		    id 'stevesaliman'
 		    name 'Steven C. Saliman'
@@ -159,9 +154,9 @@ def getPomConfiguration() {
 	    }
     }
     scm {
-      connection('scm:https://liquibase@github.com/liquibase/gradle-liquibase-plugin')
-      developerConnection('scm:git@github.com:liquibase/gradle-liquibase-plugin.git')
-      url('https://github.com/liquibase/gradle-liquibase-plugin')
+      connection('scm:https://liquibase@github.com/liquibase/liquibase-gradle-plugin')
+      developerConnection('scm:git@github.com:liquibase/liquibase-gradle-plugin.git')
+      url('https://github.com/liquibase/liquibase-gradle-plugin')
     }
   }
 }

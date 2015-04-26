@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Tim Berglund and Steven C. Saliman
+ * Copyright 2011-2015 Tim Berglund and Steven C. Saliman
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,15 @@
  *
  */
 
-package net.saliman.gradle.liquibase
+package org.liquibase.gradle
 
 /**
  * This class represents a single activity that must be performed as part of a
  * liquibase task.  It is basically the intersection of changelogs and
  * databases. Each named activity in the {@code activities} closure of the
  * {@code liquibase} block will create one of these objects.
+ *
+ * @author Steven C. Saliman
  */
 class Activity {
 	def name
@@ -37,8 +39,6 @@ class Activity {
 	 * parameters are used by Liquibase to perform token substitution on change
 	 * sets.
 	 * @param tokenMap the map of tokens and their values.
-	 *
-	 * @author Steven C. Saliman
 	 */
 	def changeLogParameters(tokenMap) {
 		tokenMap.each {

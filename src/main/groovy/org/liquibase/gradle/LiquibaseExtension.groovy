@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Tim Berglund and Steven C. Saliman
+ * Copyright 2011-2015 Tim Berglund and Steven C. Saliman
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *
  */
 
-package net.saliman.gradle.liquibase
+package org.liquibase.gradle
 
 import org.gradle.api.NamedDomainObjectContainer
 
@@ -24,6 +24,8 @@ import org.gradle.api.NamedDomainObjectContainer
  * configuration options will be in the {@code liquibase} block of the
  * build.gradle file.  This block consists of a list of activities and a run
  * list.
+ *
+ * @author Steven C. Saliman
  */
 class LiquibaseExtension {
   final NamedDomainObjectContainer<Activity> activities

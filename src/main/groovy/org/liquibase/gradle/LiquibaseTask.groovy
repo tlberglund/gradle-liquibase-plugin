@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2014 Tim Berglund and Steven C. Saliman
+ * Copyright 2011-2015 Tim Berglund and Steven C. Saliman
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *
  */
 
-package net.saliman.gradle.liquibase
+package org.liquibase.gradle
 
 import liquibase.integration.commandline.Main
 import org.gradle.api.DefaultTask
@@ -23,6 +23,8 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * Gradle task that calls Liquibase to run a command.
+ *
+ * @author Stven C. Saliman
  */
 class LiquibaseTask extends DefaultTask {
 	/**

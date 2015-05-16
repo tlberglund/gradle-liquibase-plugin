@@ -1,3 +1,7 @@
+Changes for 1.1.0
+=================
+- Refactored the project to fit into the Liquibase organization.
+
 Changes for 1.0.2
 =================
 - Bumped the dependency on the Groovy DSL to a version that works with Java

@@ -1,3 +1,9 @@
+Liquibase Gradle Plugin
+-----------------------
+A plugin for [Gradle](http://gradle.org) that allows you to use [Liquibase]
+(http://liquibase.org) to manage your database upgrades.  This project was 
+created by Tim Berglund, and is currently maintained by Steve Saliman.
+ 
 Example
 -------
 For an example of how to use this plugin, see the
@@ -7,6 +13,18 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###May 16, 2015
+We are proud to announce that the Liquibase Gradle Plugin is now a part of the 
+Liquibase organization.  I will continue maintain the code, but bringing this 
+project into the Liquibase organization will help keep all things Liquibase 
+together in one place.  This will help promote Liquibase adoption by making it
+easier for more people to use, and it will help people stay up to date with the
+latest releases. As part of that move, the artifact name has changed from 
+```net.saliman:gradle-liquibase-plugin``` to
+```org.liquibase:liquibase-gradle-plugin``` to be consistent with the rest of the
+Liquibase artifacts.  A special thank you to Nathan Voxland for his help and 
+support in bringing the Liquibase project and the Groovy DSL into one home.
+
 ###March 9, 2015
 The plugin has been updated to support Liquibase 3.3.2. Version 1.0.2 fixes a
 bug that prevented Groovy changelogs from working in Java versions before JDK 8.

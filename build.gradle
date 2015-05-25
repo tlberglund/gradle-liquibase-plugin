@@ -1,17 +1,37 @@
 #!groovy
 // The above triggers groovy syntax highlighting in vim
 
+buildscript {
+  repositories {
+    jcenter()
+    mavenCentral()
+		maven {
+		  url 'https://plugins.gradle.org/m2/'
+		}
+  }
+  dependencies {
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+		classpath 'com.gradle.publish:plugin-publish-plugin:0.9.0'
+  }
+}
+
+
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.gradle.plugin-publish'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
+// Release version that won't conflict with the bintray plugin
+def releaseVersion = '1.1.0'
+
 group = 'org.liquibase'
 archivesBaseName = 'liquibase-gradle-plugin'
-version = '1.1.0'
+version = releaseVersion
 ext.isSnapshot = version.endsWith('SNAPSHOT')
 
 if ( isSnapshot ) {
@@ -27,6 +47,7 @@ configurations {
 }
 
 repositories {
+	jcenter()
   mavenLocal()
   mavenCentral()
 }
@@ -161,3 +182,46 @@ def getPomConfiguration() {
   }
 }
 
+// configuration for publishing to bintray with the jfrog plugin
+bintray {
+  user = project.hasProperty('bintrayUsername') ? project.getProperty('bintrayUsername') : ''
+  key = project.hasProperty('bintrayApiKey') ? project.getProperty('bintrayApiKey') : ''
+
+  configurations = [ 'archives' ]
+
+  pkg {
+    // repo = 'gradle-plugins'
+    repo = 'maven'
+    name = 'liquibase-gradle-plugin'
+    desc = 'A Gradle plugin for running the Liquibase database upgrade tool.'
+    licenses = [ 'Apache-2.0' ]
+    websiteUrl = 'https://github.com/liquibase/liquibase-gradle-plugin'
+    issueTrackerUrl = 'https://github.com/liquibase/liquibase-gradle-plugin/issues'
+    vcsUrl = 'https://github.com/liquibase/liquibase-gradle-plugin.git'
+    labels = [ 'gradle', 'liquibase', 'database' ]
+    publicDownloadNumbers = true
+    version {
+      // name = version
+      // vcsTag = version
+      vcsTag = "Release_${releaseVersion}"
+      attributes = [
+              'gradle-plugin': 'org.liquibase.gradle:org.liquibase:liquibase-gradle-plugin'
+      ]
+    }
+  }
+}
+
+// configuration for publishing to the Gradle plugins portal
+pluginBundle {
+  website = 'https://github.com/liquibase/liquibase-gradle-plugin'
+	vcsUrl = 'https://github.com/liquibase/liquibase-gradle-plugin.git'
+	description = 'A Gradle plugin for running the Liquibase database upgrade tool.'
+	tags = [ 'gradle', 'liquibase', 'database' ]
+
+	plugins {
+		gradleLiquibasePlugin {
+			id = 'org.liquibase.gradle'
+			displayName = 'Gradle Liquibase plugin'
+		}
+	}
+}

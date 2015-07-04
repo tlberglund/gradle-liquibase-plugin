@@ -156,8 +156,14 @@ liquibase {
 
 ## Usage
 The Liquibase plugin allows you to use Liquibase to manage database updates.
-It also adds support for the the Groovy DSL, which is a much nicer way to write
-a changelog.  The Groovy DSL syntax intended to mirror the Liquibase XML syntax
+You can parse changesets using any Liquibase parser that is in the classpath.
+Some parsers, such as the XML parser and the YAML parser, are part of Liquiabse
+itself, although some parsers require you to add additional dependencies to the
+buildscript.  For example, the YAML parser requires ```org.yaml:snakeyaml:1.15```.
+
+This plugin adds support for the the Groovy DSL, which is a much nicer way to 
+write changelogs, especially since Groovy is the language of Gradle scripts 
+themselves.  The Groovy DSL syntax intended to mirror the Liquibase XML syntax
 directly, such that mapping elements and attributes from the Liquibase
 documentation to Groovy builder syntax will result in a valid changelog. Hence
 this DSL is not documented separately from the Liquibase XML format.  However
@@ -245,4 +251,4 @@ Some things to keep in mind when setting up the ```liquibase``` block:
    the command value is not configured in the ```liquibase``` block.  To supply
    a command value, add ```-PliquibaseCommandValue=<value>``` to the gradle
    command.
-
+   

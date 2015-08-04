@@ -1,3 +1,10 @@
+Changes for 1.1.1
+=================
+- Added support for Liquibase 3.3.5
+
+- Fixed the task descriptions to correctly identify the property that is used
+  to pass values to commands (Issue #2)
+  
 Changes for 1.1.0
 =================
 - Refactored the project to fit into the Liquibase organization.

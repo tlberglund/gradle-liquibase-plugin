@@ -14,7 +14,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.liquibase:liquibase-gradle-plugin:1.1.0"
+        classpath "org.liquibase:liquibase-gradle-plugin:1.1.1"
     }
 }
 apply plugin: 'org.liquibase.gradle'
@@ -25,7 +25,7 @@ Build script snippet for new, incubating, plugin mechanism introduced in Gradle
 
 ```groovy
 plugins {
-  id 'org.liquibase.gradle' version '1.1.0'
+  id 'org.liquibase.gradle' version '1.1.1'
 }
 ```
 
@@ -39,6 +39,9 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###August 3, 2015
+The plugin has been updated to support Liquibase 3.3.5.
+
 ###May 16, 2015
 We are proud to announce that the Liquibase Gradle Plugin is now a part of the 
 Liquibase organization.  I will continue maintain the code, but bringing this 

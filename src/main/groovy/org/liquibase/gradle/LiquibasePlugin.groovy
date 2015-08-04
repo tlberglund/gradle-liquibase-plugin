@@ -82,19 +82,19 @@ class LiquibasePlugin
 
 	  // Create tasks that do require a value.
 	  [
-		  'updateCount': 'Applies the next <liquibase.commandValue> change sets.',
-			'updateCountSql' : 'Writes SQL to apply the next <liquibase.commandValue> change sets to STDOUT.',
-		  'rollback' : 'Rolls back the database to the state it was in when the <liquibase.commandValue> tag was applied.',
-		  'rollbackToDate' : 'Rolls back the database to the state it was in at the <liquibase.commandValue> date/time.',
-		  'rollbackCount' : 'Rolls back the last <liquibase.commandValue> change sets.',
-		  'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibase.commandValue> tag was applied to STDOUT.',
-		  'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibase.commandValue> date/time to STDOUT.',
-		  'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibase.commandValue> change sets to STDOUT.',
-		  'futureRollbackCountSQL': 'Writes SQL to roll back <liquibase.commandValue> changes the database after the changes in the changelog have been applied.',
-		  'tag': 'Tags the current database state with <liquibase.commandValue> for future rollback',
+		  'updateCount': 'Applies the next <liquibaseCommandValue> change sets.',
+			'updateCountSql' : 'Writes SQL to apply the next <liquibaseCommandValue> change sets to STDOUT.',
+		  'rollback' : 'Rolls back the database to the state it was in when the <liquibaseCommandValue> tag was applied.',
+		  'rollbackToDate' : 'Rolls back the database to the state it was in at the <liquibaseCommandValue> date/time.',
+		  'rollbackCount' : 'Rolls back the last <liquibaseCommandValue> change sets.',
+		  'rollbackSQL' : 'Writes SQL to roll back the database to the state it was in when the <liquibaseCommandValue> tag was applied to STDOUT.',
+		  'rollbackToDateSQL' : 'Writes SQL to roll back the database to the state it was in at the <liquibaseCommandValue> date/time to STDOUT.',
+		  'rollbackCountSQL' : 'Writes SQL to roll back the last <liquibaseCommandValue> change sets to STDOUT.',
+		  'futureRollbackCountSQL': 'Writes SQL to roll back <liquibaseCommandValue> changes the database after the changes in the changelog have been applied.',
+		  'tag': 'Tags the current database state with <liquibaseCommandValue> for future rollback',
 		  'executeSql': 'Executes SQL in the database',
-			'calculateCheckSum': 'Calculates and prints a checksum for the <liquibase.commandValue> changeset with the given id in the format filepath::id::author.',
-		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log to the <liquibase.commandValue> directory.'
+			'calculateCheckSum': 'Calculates and prints a checksum for the <liquibaseCommandValue> changeset with the given id in the format filepath::id::author.',
+		  'dbDoc': 'Generates Javadoc-like documentation based on current database and change log to the <liquibaseCommandValue> directory.'
 	  ].each { taskName, taskDescription ->
 		  def commandName = taskName
 		  if ( project.hasProperty('liquibaseTaskPrefix') ) {

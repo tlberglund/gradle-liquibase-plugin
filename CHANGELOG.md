@@ -1,3 +1,7 @@
+Changes for 1.2.0
+================
+- Updated the DSL to support most of Liquibase 3.4.2 (Issue #4 and Issue #6)
+
 Changes for 1.1.1
 =================
 - Added support for Liquibase 3.3.5

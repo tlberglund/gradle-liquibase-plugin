@@ -14,18 +14,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.liquibase:liquibase-gradle-plugin:1.1.1"
+        classpath "org.liquibase:liquibase-gradle-plugin:1.2.0"
     }
 }
 apply plugin: 'org.liquibase.gradle'
 ```
 
-Build script snippet for new, incubating, plugin mechanism introduced in Gradle
-2.1:
+Build script snippet for the new, plugin mechanism introduced in Gradle 2.1:
 
 ```groovy
 plugins {
-  id 'org.liquibase.gradle' version '1.1.1'
+  id 'org.liquibase.gradle' version '1.2.0'
 }
 ```
 
@@ -39,6 +38,9 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###November 30, 2015
+The plugin has been updated to support Liquibase 3.4.2.
+
 ###August 3, 2015
 The plugin has been updated to support Liquibase 3.3.5.
 
@@ -54,7 +56,7 @@ latest releases. As part of that move, the artifact name has changed from
 Liquibase artifacts.  Also, starting with plugin version 1.1.0, the plugin is 
 available via the official Gradle plugin portal.  A special thank you to Nathan
 Voxland for his help and support in bringing the Liquibase project and the 
-Groovy Plugin into one home.
+Groovy Plugin together into one home.
 
 ###March 9, 2015
 The plugin has been updated to support Liquibase 3.3.2. Version 1.0.2 fixes a
@@ -173,14 +175,17 @@ this DSL is not documented separately from the Liquibase XML format.  However
 there are some minor differences or enhancements to the XML format, and there
 are some gaping holes in Liquibase's documentation of the XML. Those holes are
 filled, and differences explained in the documentation on the
-[Groovy Liquibase DSL](https://github.com/tlberglund/groovy-liquibase) project
-page.  To use the Groovy DSL, simply specify a ```changeLogFile``` that ends in
-.groovy.  For those who prefer XML, JSON, or Yaml, you can use these formats by
-specifying a ```changeLogFile``` that ends in the appropriate extension.
+[Groovy Liquibase DSL](https://github.com/liquibase/liquibase-groovy-dsl) 
+project page.  To use the Groovy DSL, simply specify a ```changeLogFile``` that
+ends in .groovy.  For those who, for some reason, still prefer XML, JSON, or
+Yaml, you can use these formats by specifying a ```changeLogFile``` that ends
+in the appropriate extension, and Liquibase will find and use the correct 
+parser.
 
 The Liquibase plugin is meant to be a light weight font end for the Liquibase
 command line utility.  When the liquibase plugin is applied, it creates a
-Gradle task for each command supported by Liquibase. The
+Gradle task for each command supported by Liquibase. ```gradle tasks``` will
+list out these tasks.  The
 [Liquibase Documentation](http://www.liquibase.org/documentation/command_line.html)
 describes what each command does and what parameters each command uses.  If you
 want to prefix each task to avoid task name conflicts, set a value for the 
@@ -218,7 +223,7 @@ liquibase {
       changeLogFile 'src/main/db/security.groovy'
       url project.ext.securityUrl
       username project.ext.securityUsername
-      password project.ext.mainPassword
+      password project.ext.securityPassword
      }
   }
   runList = project.ext.runList
@@ -227,10 +232,10 @@ liquibase {
 
 Some things to keep in mind when setting up the ```liquibase``` block:
 
-1. We only need one activity for each type of activity.  In the example above,
-   the database credentials are driven by build properties so that the correct
-   database can be specified at build time so that you don't need a separate
-   activity for each database.
+1. We only need one activity block for each type of activity.  In the example 
+   above, the database credentials are driven by build properties so that the
+   correct database can be specified at build time so that you don't need a
+   separate activity for each database.
 
 2. By making the value of ```runList``` a property, you can determine the
    activities that get run at build time.  For example, if you didn't need to
@@ -239,7 +244,7 @@ Some things to keep in mind when setting up the ```liquibase``` block:
    security updates, you would use ```gradle update -PrunList='main,security'```
    This use of properties is the reason the runList is a string and not an array.
 
-3. The methods in each activity are meant to be pass-throughs to Liquibase.
+3. The methods in each activity block are meant to be pass-throughs to Liquibase.
    Any valid Liquibase command parameter is a legal method here.  For example,
    if you wanted to increase the log level, you could add ```logLevel debug```
    to the activity.

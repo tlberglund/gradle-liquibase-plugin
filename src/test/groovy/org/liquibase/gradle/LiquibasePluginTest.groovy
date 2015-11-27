@@ -17,7 +17,7 @@ class LiquibasePluginTest extends GroovyTestCase {
 	 */
 	public void testApplyPluginByType() {
 		project.apply plugin: org.liquibase.gradle.LiquibasePlugin
-    assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))
+		assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))
 		// the tag task takes an arg...
 		def task = project.tasks.findByName('tag')
 		assertNotNull("Project is missing tag task", task)
@@ -70,7 +70,7 @@ class LiquibasePluginTest extends GroovyTestCase {
 		assertTrue("tag task is the wrong type", task instanceof LiquibaseTask)
 		assertTrue("tag task should be enabled", task.enabled)
 		assertEquals("tag task has the wrong command", "tag", task.command)
-   // and the update task does not.
+		// and the update task does not.
 		task = project.tasks.findByName('liquibaseUpdate')
 		assertNotNull("Project is missing update task", task)
 		assertTrue("update task is the wrong type", task instanceof LiquibaseTask)

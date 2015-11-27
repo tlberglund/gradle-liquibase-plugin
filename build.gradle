@@ -27,7 +27,7 @@ sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
 // Release version that won't conflict with the bintray plugin
-def releaseVersion = '1.1.1'
+def releaseVersion = '1.2.0'
 
 group = 'org.liquibase'
 archivesBaseName = 'liquibase-gradle-plugin'
@@ -55,8 +55,8 @@ repositories {
 dependencies {
   compile 'org.codehaus.groovy:groovy:2.4.1'
   compile gradleApi()
-  compile 'org.liquibase:liquibase-core:3.3.2'
-  runtime 'org.liquibase:liquibase-groovy-dsl:1.1.1'
+  compile 'org.liquibase:liquibase-core:3.4.2'
+  runtime 'org.liquibase:liquibase-groovy-dsl:1.2.0'
   archives 'org.apache.maven.wagon:wagon-ssh:2.8'
   archives 'org.apache.maven.wagon:wagon-ssh-external:2.8'
 }

@@ -6,7 +6,16 @@ created by Tim Berglund, and is currently maintained by Steve Saliman.
 
 Usage
 -----
-Build script snippet for use in all Gradle versions:
+To use the plugin with Gradle 2.1 or later, add the following to your 
+build.gradle file.
+
+```groovy
+plugins {
+  id 'org.liquibase.gradle' version '1.2.0'
+}
+```
+
+To use the plugin with Gradle 2.0 or older, add the following to build.gradle:
 
 ```groovy
 buildscript {
@@ -19,15 +28,6 @@ buildscript {
 }
 apply plugin: 'org.liquibase.gradle'
 ```
-
-Build script snippet for the new, plugin mechanism introduced in Gradle 2.1:
-
-```groovy
-plugins {
-  id 'org.liquibase.gradle' version '1.2.0'
-}
-```
-
 
 Example
 -------

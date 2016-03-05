@@ -198,10 +198,14 @@ plugin will create tasks named ```liquibaseUpdate```, ```liquibaseTag```, etc.
 Parameters for the commands are configured in the ```liquibase``` block inside
 the build.gradle file.  This block contains a series of, "activities", each
 defining a series of Liquibase parameters.  Any method in an "activity" is
-assumed to be a Liquibase parameter.  The ```liquibase``` block also has an
-optional "runList", which determines which activities are run for each task.  If
-no runList is defined, the Liquibase Plugin will run all the activities.  NOTE:
-the order of execution when there is no runList is not guaranteed.
+assumed to be a Liquibase command line parameter.  For example, including
+```changeLogFile 'myfile.groovy'``` in an activity does the same thing as
+```--changeLogfile=myfile.groovy``` would do on the command line.  The Liquibase
+documentation details all the valid command line parameters.  The 
+```liquibase``` block also has an optional "runList", which determines which 
+activities are run for each task.  If no runList is defined, the Liquibase 
+Plugin will run all the activities.  NOTE: the order of execution when there is
+no runList is not guaranteed.
 
 *Example:*
 

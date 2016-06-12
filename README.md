@@ -182,7 +182,7 @@ Yaml, you can use these formats by specifying a ```changeLogFile``` that ends
 in the appropriate extension, and Liquibase will find and use the correct 
 parser.
 
-The Liquibase plugin is meant to be a light weight font end for the Liquibase
+The Liquibase plugin is meant to be a light weight front end for the Liquibase
 command line utility.  When the liquibase plugin is applied, it creates a
 Gradle task for each command supported by Liquibase. ```gradle tasks``` will
 list out these tasks.  The

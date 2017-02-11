@@ -140,6 +140,7 @@ databases {
 	username= 'myusername'
 	password = 'mypassword'
   }
+}
 defaultDatabase = databases.myDB
 defaultChangeLogs = changelogs
 ```
@@ -200,7 +201,9 @@ the build.gradle file.  This block contains a series of, "activities", each
 defining a series of Liquibase parameters.  Any method in an "activity" is
 assumed to be a Liquibase command line parameter.  For example, including
 ```changeLogFile 'myfile.groovy'``` in an activity does the same thing as
-```--changeLogfile=myfile.groovy``` would do on the command line.  The Liquibase
+```--changeLogfile=myfile.groovy``` would do on the command line.  Including
+```difftypes 'data'``` in an activity does the same thing as 
+```difftypes=data``` would do on the command line, etc.  The Liquibase
 documentation details all the valid command line parameters.  The 
 ```liquibase``` block also has an optional "runList", which determines which 
 activities are run for each task.  If no runList is defined, the Liquibase 
@@ -211,8 +214,9 @@ no runList is not guaranteed.
 
 Let's suppose that for each deployment, you need to update the data model for
 your application's database, and wou also need to run some SQL statements
-in a separate database used for security.  The ```liquibase``` block might
-look like this:
+in a separate database used for security.  Additionally, you want to 
+occasionally run a diff between the changelog and the database.  The
+ ```liquibase``` block might look like this:
 
 ```groovy
 liquibase {
@@ -228,7 +232,14 @@ liquibase {
       url project.ext.securityUrl
       username project.ext.securityUsername
       password project.ext.securityPassword
-     }
+    }
+    diffMain {
+      changeLogFile 'src/main/db/main.groovy'
+      url project.ext.mainUrl
+      username project.ext.mainUsername
+      password project.ext.mainPassword
+      difftypes 'data'
+    }
   }
   runList = project.ext.runList
 }
@@ -245,13 +256,16 @@ Some things to keep in mind when setting up the ```liquibase``` block:
    activities that get run at build time.  For example, if you didn't need to
    run the security updates in the CI environment, you could type
    ```gradle update -PrunList=main``` For environments where you do need the
-   security updates, you would use ```gradle update -PrunList='main,security'```
-   This use of properties is the reason the runList is a string and not an array.
+   security updates, you would use ```gradle update -PrunList='main,security'```.
+   To do a diff, you'd run ```gradle diff -PrunList=diffMain```.  This use of 
+   properties is the reason the runList is a string and not an array.
 
 3. The methods in each activity block are meant to be pass-throughs to Liquibase.
-   Any valid Liquibase command parameter is a legal method here.  For example,
+   Any valid Liquibase command parameter is a legal method here.  The command 
+   parameters are parameters in the Liquibase documentation that start with a
+    ```--``` such as ```--difftypes``` or ```--logLevel```.  For example,
    if you wanted to increase the log level, you could add ```logLevel debug```
-   to the activity.
+   to the activity.  
 
 4. In addition to the command pass-through methods of an activity, there is a
    ```changeLogParameters``` method.  This method takes a map, and is used to

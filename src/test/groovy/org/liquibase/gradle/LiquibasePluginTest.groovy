@@ -2,11 +2,19 @@ package org.liquibase.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Before
+import org.junit.Test
 
-class LiquibasePluginTest extends GroovyTestCase {
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertNull
+import static org.junit.Assert.assertTrue
+
+class LiquibasePluginTest {
 	Project project
 
-	public void setUp() {
+	@Before
+	void setUp() {
 		project = ProjectBuilder.builder().build();
 	}
 
@@ -15,7 +23,8 @@ class LiquibasePluginTest extends GroovyTestCase {
 	 * type.  Prove that it works.  We aren't going to go nuts here, just look
 	 * for one task that takes an argument, and one that doesn't
 	 */
-	public void testApplyPluginByType() {
+	@Test
+	void applyPluginByType() {
 		project.apply plugin: org.liquibase.gradle.LiquibasePlugin
 		assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))
 		// the tag task takes an arg...
@@ -36,7 +45,8 @@ class LiquibasePluginTest extends GroovyTestCase {
 	 * Apply the plugin by name and make sure it creates tasks.  We don't go nuts
 	 * here, just look for a task that takes an argument, and one that doesn't
 	 */
-	public void testApplyPluginByName() {
+	@Test
+	void applyPluginByName() {
 		project.apply plugin: 'liquibase'
 		assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))
 		// the tag task takes an arg...
@@ -60,7 +70,8 @@ class LiquibasePluginTest extends GroovyTestCase {
 	 * one that doesn't.  We also make sure that while the task names are changed,
 	 * the commands they run are not.
 	 */
-	public void testApplyPluginByNameWithPrefix() {
+	@Test
+	void applyPluginByNameWithPrefix() {
 		project.ext.liquibaseTaskPrefix = 'liquibase'
 		project.apply plugin: 'liquibase'
 		assertTrue("Project is missing plugin", project.plugins.hasPlugin(LiquibasePlugin))

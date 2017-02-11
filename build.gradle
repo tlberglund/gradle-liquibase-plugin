@@ -56,6 +56,7 @@ dependencies {
   compile 'org.codehaus.groovy:groovy:2.4.1'
   compile gradleApi()
   compile 'org.liquibase:liquibase-core:3.4.2'
+	testCompile 'junit:junit:4.12'
   runtime 'org.liquibase:liquibase-groovy-dsl:1.2.2-SNAPSHOT'
   archives 'org.apache.maven.wagon:wagon-ssh:2.8'
   archives 'org.apache.maven.wagon:wagon-ssh-external:2.8'

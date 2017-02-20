@@ -83,13 +83,22 @@ class LiquibaseTask extends DefaultTask {
 			throw new RuntimeException("The Liquibase '${command}' command requires a value")
 		}
 
-		if ( value ) {
+		// Put the command value after the command UNLESS the command is
+		// "status".  Workaround for https://liquibase.jira.com/browse/CORE-2519
+		if ( value && command != "status" && command != "unexpectedChangeSets") {
 			args += value
 		}
 
-
+		// Unfortunately, -D arguments need to be presented after the command
+		// to be processed correctly by Liquibase.
 		activity.parameters.each {
 			args += "-D${it.key}=${it.value}"
+		}
+
+		// Because of Liquibase CORE-2519, a verbose status only works when
+		// --verbose is placed last.
+		if ( value && (command == "status" || command == 'unexpectedChangeSets') ) {
+			args += value
 		}
 
 		println "liquibase-plugin: Running the '${activity.name}' activity..."

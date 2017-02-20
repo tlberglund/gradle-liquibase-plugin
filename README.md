@@ -38,6 +38,10 @@ plugin, and an example directory setup as well.
 
 News
 ----
+###February 20, 2017
+The plugin has been updated to use the latest Groovy DSL, and I've worked 
+around a Liquibase argument parsing bug.
+
 ###November 30, 2015
 The plugin has been updated to support Liquibase 3.4.2.
 

@@ -1,3 +1,10 @@
+Changes for 1.2.2
+=================
+- Updated the plugin to use the latest Groovy DSL bug fixes
+
+- Worked around a Liquibase bug that was causing problems with the ```status```
+  command (Issue #3).
+  
 Changes for 1.2.1
 =================
 - Updated the DSL to fix a customChange issue.

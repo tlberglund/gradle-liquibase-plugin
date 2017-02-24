@@ -11,7 +11,7 @@ build.gradle file.
 
 ```groovy
 plugins {
-  id 'org.liquibase.gradle' version '1.2.1'
+  id 'org.liquibase.gradle' version '1.2.2'
 }
 ```
 
@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.liquibase:liquibase-gradle-plugin:1.2.1"
+        classpath "org.liquibase:liquibase-gradle-plugin:1.2.2"
     }
 }
 apply plugin: 'org.liquibase.gradle'

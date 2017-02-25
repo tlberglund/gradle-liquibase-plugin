@@ -11,7 +11,7 @@ build.gradle file.
 
 ```groovy
 plugins {
-  id 'org.liquibase.gradle' version '1.2.2'
+  id 'org.liquibase.gradle' version '1.2.3'
 }
 ```
 
@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.liquibase:liquibase-gradle-plugin:1.2.2"
+        classpath "org.liquibase:liquibase-gradle-plugin:1.2.3"
     }
 }
 apply plugin: 'org.liquibase.gradle'
@@ -38,6 +38,10 @@ plugin, and an example directory setup as well.
 
 News
 ----
+### February 25, 2017
+The previous release of this plugin had a broken dependency.  Version 1.2.3 
+fixes this issue.  Please do not use version 1.2.2.
+
 ###February 20, 2017
 The plugin has been updated to use the latest Groovy DSL, and I've worked 
 around a Liquibase argument parsing bug.

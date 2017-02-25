@@ -1,3 +1,8 @@
+Changes for 1.2.3
+=================
+- Updated the plugin to use the correct, non-snapshot release of the Groovy DSL
+  (Issue #22).
+  
 Changes for 1.2.2
 =================
 - Updated the plugin to use the latest Groovy DSL bug fixes

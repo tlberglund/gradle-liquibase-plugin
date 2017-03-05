@@ -1,3 +1,8 @@
+Changes for 1.2.4 (not yet released) 
+====================================
+- fixed support for the excludeObjects/includeObjects options with thanks to
+  @manuelsanchezortiz (Issue 23).
+  
 Changes for 1.2.3
 =================
 - Updated the plugin to use the correct, non-snapshot release of the Groovy DSL

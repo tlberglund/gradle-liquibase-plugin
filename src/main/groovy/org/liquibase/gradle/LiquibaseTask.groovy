@@ -63,7 +63,7 @@ class LiquibaseTask extends DefaultTask {
 	 */
 	def runLiquibase(activity) {
 		def args = []
-		//liquibase forces to add this arguments after the command
+		// liquibase forces to add these arguments after the command...
 		def exclusions = ['excludeObjects','includeObjects']
 		activity.arguments.findAll( { !exclusions.contains(it.key) } ) .each {
 			args += "--${it.key}=${it.value}"
@@ -72,7 +72,7 @@ class LiquibaseTask extends DefaultTask {
 		if ( command ) {
 			args += command
 		}
-		//add them now
+		// ...add them now
 		activity.arguments.findAll( { exclusions.contains(it.key) } ) .each {
 			args += "--${it.key}=${it.value}"
 		}

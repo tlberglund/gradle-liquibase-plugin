@@ -1,8 +1,9 @@
 Liquibase Gradle Plugin
 -----------------------
-A plugin for [Gradle](http://gradle.org) that allows you to use [Liquibase]
-(http://liquibase.org) to manage your database upgrades.  This project was 
-created by Tim Berglund, and is currently maintained by Steve Saliman.
+A plugin for [Gradle](http://gradle.org) that allows you to use 
+[Liquibase](http://liquibase.org) to manage your database upgrades.  This 
+project was created by Tim Berglund, and is currently maintained by Steve 
+Saliman.
 
 Usage
 -----

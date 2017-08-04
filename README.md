@@ -47,17 +47,17 @@ includeObjects options.
 The previous release of this plugin had a broken dependency.  Version 1.2.3 
 fixes this issue.  Please do not use version 1.2.2.
 
-###February 20, 2017
+### February 20, 2017
 The plugin has been updated to use the latest Groovy DSL, and I've worked 
 around a Liquibase argument parsing bug.
 
-###November 30, 2015
+### November 30, 2015
 The plugin has been updated to support Liquibase 3.4.2.
 
-###August 3, 2015
+### August 3, 2015
 The plugin has been updated to support Liquibase 3.3.5.
 
-###May 16, 2015
+### May 16, 2015
 We are proud to announce that the Liquibase Gradle Plugin is now a part of the 
 Liquibase organization.  I will continue maintain the code, but bringing this 
 project into the Liquibase organization will help keep all things Liquibase 
@@ -71,7 +71,7 @@ available via the official Gradle plugin portal.  A special thank you to Nathan
 Voxland for his help and support in bringing the Liquibase project and the 
 Groovy Plugin together into one home.
 
-###March 9, 2015
+### March 9, 2015
 The plugin has been updated to support Liquibase 3.3.2. Version 1.0.2 fixes a
 bug that prevented Groovy changelogs from working in Java versions before JDK 8.
 As part of this release, I've bumped the version of Groovy that the plugin uses.
@@ -80,14 +80,14 @@ This can cause issues in Gradle 1.x.  The workaround is to add
 buildscript dependencies.
 
 
-###September 10, 2014
+### September 10, 2014
 This plugin is designed to be a wrapper for the Liquibase project, so it 
 creates tasks to match the various Liquibase commands.  This can cause conflicts
 with tasks that other plugins create, so we've added the ability to add a 
 prefix to all the tasks this plugin creates.  See the Usage section for more
 details.
 
-###June 15, 2014
+### June 15, 2014
 We are proud to announce the long awaited release of version 1.0.0 of the 
 Gradle Liquibase Plugin. Version 1.0.0 uses version the latest release of 
 Liquibase (3.1.1), and it appears to work fine with both Gradle 1.x releases as

@@ -1,5 +1,5 @@
-Changes for 1.2.4 (not yet released) 
-====================================
+Changes for 1.2.4
+=================
 - fixed support for the excludeObjects/includeObjects options with thanks to
   @manuelsanchezortiz (Issue 23).
   
